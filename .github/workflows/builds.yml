@@ -44,7 +44,7 @@ jobs:
             fatjar-artifact-suffix:        'Windows-x64.jar'
             gluon-desktop-arch-token:      'x86_64-windows'
             gluon-desktop-artifact-suffix: 'Windows-x64-native.exe'
-            msi-desktop-artifact-suffix:   'Windows-x64.msi'
+            msi-desktop-artifact-suffix:   'Windows-x64-embedjre.msi'
             embedjre-exe-artifact-suffix:  'Windows-x64-embedjre.exe'
             embedjre-msi-artifact-suffix:  'Windows-x64-embedjre.msi'
           - os-config: 3
