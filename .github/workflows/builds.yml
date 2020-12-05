@@ -238,9 +238,9 @@ jobs:
 
       # Creating the runtime with jlink
       - if: matrix.msi-desktop-artifact-suffix != null
-          name: Create Windows Installer (msi) Step 2
-          run: ${{ env.JAVA_HOME }}\bin\jlink -p "${{ env.JAVA_HOME }}\jmods" --add-modules java.desktop --strip-debug --no-header-files --no-man-pages --strip-native-commands --vm=server --compress=2 --output runtime
-          working-directory: ${{ env.javafx-module }}
+        name: Create Windows Installer (msi) Step 1
+        run: ${{ env.JAVA_HOME }}\bin\jlink -p "${{ env.JAVA_HOME }}\jmods" --add-modules java.desktop --strip-debug --no-header-files --no-man-pages --strip-native-commands --vm=server --compress=2 --output runtime
+        working-directory: ${{ env.javafx-module }}
 
       # Creating the msi with jpackage
       - if: matrix.msi-desktop-artifact-suffix != null
