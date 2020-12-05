@@ -34,7 +34,7 @@ jobs:
             web-artifact-suffix:           'Web.war' # Must run on Linux because the Web branch push action runs only on Linux
             fatjar-artifact-suffix:        'Linux-x64.jar'
             gluon-desktop-arch-token:      'x86_64-linux'
-            gluon-desktop-artifact-suffix: 'Linux-x64-executable'
+            gluon-desktop-artifact-suffix: 'Linux-x64-runnable'
             gluon-android-arch-token:      'aarch64-android'
             gluon-android-artifact-suffix: 'Android-aarch64.apk'
           - os-config: 2
@@ -47,7 +47,7 @@ jobs:
             os: macos-latest
             fatjar-artifact-suffix:        'MacOS-x64.jar'
             gluon-desktop-arch-token:      'x86_64-darwin'
-            gluon-desktop-Artifact-suffix: 'MacOS-x64-executable'
+            gluon-desktop-Artifact-suffix: 'MacOS-x64-runnable'
             # The iOS build needs the Apple certificate in secrets (steps will be skipped otherwise)
             gluon-ios-arch-token:          'arm64-ios'
             gluon-ios-artifact-suffix:     'iOS-arm64.ipa'
@@ -158,13 +158,7 @@ jobs:
         name: Copy fat jar with JavaFx to staging
         run: |
           cp ${{ env.javafx-module }}/target/*-fat.jar staging/${{ env.application-name }}-${{ matrix.fatjar-artifact-suffix }}
-          cp ${{ env.javafx-module }}/target/*.deb staging/ | true
-          cp ${{ env.javafx-module }}/target/*.rpm staging/ | true
-          cp ${{ env.javafx-module }}/target/*.exe staging/ | true
-          cp ${{ env.javafx-module }}/target/*.msi staging/ | true
-          cp ${{ env.javafx-module }}/target/*.msm staging/ | true
-          cp ${{ env.javafx-module }}/target/*.dmg staging/ | true
-          cp ${{ env.javafx-module }}/target/*.pkg staging/ | true
+          cp ${{ env.javafx-module }}/target/javapackager/*.* staging/
 
       # Uploading it in the assets of this workflow run
       - if: matrix.fatjar-artifact-suffix != null

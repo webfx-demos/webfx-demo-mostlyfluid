@@ -90,6 +90,7 @@
                                     <organizationUrl>https://webfx-project.org</organizationUrl>
                                     <organizationEmail>info@webfx-project.org</organizationEmail>
                                     <url>https://webfx-responsivedesign-demo.netlify.app</url>
+                                    <outputDirectory>${project.build.directory}/javapackager</outputDirectory>
                                 </configuration>
                             </execution>
                         </executions>
