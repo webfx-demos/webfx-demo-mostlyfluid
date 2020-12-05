@@ -110,6 +110,12 @@ jobs:
       - name: Make staging directory
         run: mkdir staging
 
+      # Just for debug
+      - if: matrix.msi-desktop-artifact-suffix != null
+        name: Create Windows Installer (msi)
+        run: |
+          ${{ env.JAVA_HOME }}\bin\jlink -p "${{ env.JAVA_HOME }}\jmods" --add-modules java.desktop --strip-debug --no-header-files --no-man-pages --strip-native-commands --vm=server --compress=2 --output runtime
+        working-directory: ${{ env.javafx-module }}
 
       ##################################################################################################################
       #                                     Clearing SNAPSHOT release assets                                           #
@@ -174,7 +180,9 @@ jobs:
         run: Copy-Item "${{ env.javafx-module }}/target/javapackager/*.exe" -Destination "staging/${{ env.application-name }}-${{ matrix.embedjre-exe-artifact-suffix }}"
 
       - if: matrix.embedjre-msi-artifact-suffix != null
-        run: Copy-Item "${{ env.javafx-module }}/target/javapackager/*.msi" -Destination "staging/${{ env.application-name }}-${{ matrix.embedjre-msi-artifact-suffix }}"
+        run: |
+          dir ${{ env.javafx-module }}/target/javapackager/
+          Copy-Item "${{ env.javafx-module }}/target/javapackager/*.msi" -Destination "staging/${{ env.application-name }}-${{ matrix.embedjre-msi-artifact-suffix }}"
 
       - if: matrix.embedjre-dmg-artifact-suffix != null
         run: cp ${{ env.javafx-module }}/target/javapackager/*.dmg staging/${{ env.application-name }}-${{ matrix.embedjre-dmg-artifact-suffix }} | true
