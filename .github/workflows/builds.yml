@@ -236,12 +236,16 @@ jobs:
       #  6) App-Windows-x64.msi : Windows installer (msi)                                                              #
       ##################################################################################################################
 
-      # Delegating this task to a batch file (create-distribution-SNAPSHOT-windows-x64.bat)
+      # Creating the runtime with jlink
       - if: matrix.msi-desktop-artifact-suffix != null
-        name: Create Windows Installer (msi)
-        run: |
-             ${{ env.JAVA_HOME }}\bin\jlink -p "${{ env.JAVA_HOME }}\jmods" --add-modules java.desktop --strip-debug --no-header-files --no-man-pages --strip-native-commands --vm=server --compress=2 --output runtime
-             ${{ env.JAVA_HOME }}\bin\jpackage --input .\target\ --name {{ env.application-name }} --main-jar webfx-demo-${{ matrix.app.module-token }}-application-javafx-0.1.0-SNAPSHOT.jar -type msi --runtime-image runtime --app-version 0.0.0 --win-per-user-install --win-menu --win-menu-group WebFx
+          name: Create Windows Installer (msi) Step 2
+          run: ${{ env.JAVA_HOME }}\bin\jlink -p "${{ env.JAVA_HOME }}\jmods" --add-modules java.desktop --strip-debug --no-header-files --no-man-pages --strip-native-commands --vm=server --compress=2 --output runtime
+          working-directory: ${{ env.javafx-module }}
+
+      # Creating the msi with jpackage
+      - if: matrix.msi-desktop-artifact-suffix != null
+        name: Create Windows Installer (msi) Step 2
+        run: ${{ env.JAVA_HOME }}\bin\jpackage --input .\target\ --name {{ env.application-name }} --main-jar webfx-demo-${{ matrix.app.module-token }}-application-javafx-0.1.0-SNAPSHOT.jar -type msi --runtime-image runtime --app-version 0.0.0 --win-per-user-install --win-menu --win-menu-group WebFx
         working-directory: ${{ env.javafx-module }}
 
 
