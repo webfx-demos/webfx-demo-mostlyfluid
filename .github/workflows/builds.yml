@@ -158,13 +158,7 @@ jobs:
         name: Copy fat jar with JavaFx to staging
         run: |
           cp ${{ env.javafx-module }}/target/*-fat.jar staging/${{ env.application-name }}-${{ matrix.fatjar-artifact-suffix }}
-          cp ${{ env.javafx-module }}/target/*.deb staging/
-          cp ${{ env.javafx-module }}/target/*.rpm staging/
-          cp ${{ env.javafx-module }}/target/*.exe staging/
-          cp ${{ env.javafx-module }}/target/*.msi staging/
-          cp ${{ env.javafx-module }}/target/*.msm staging/
-          cp ${{ env.javafx-module }}/target/*.dmg staging/
-          cp ${{ env.javafx-module }}/target/*.pkg staging/
+          find ${{ env.javafx-module }}/target/ -maxdepth 1 -type f -name "*.deb" -o -name "*.rpm" -o -name "*.exe" -o -name "*.msi" -o -name "*.msm" -o -name "*.dmg" -o -name "*.pkg" -exec cp -n {} staging \;
 
       # Uploading it in the assets of this workflow run
       - if: matrix.fatjar-artifact-suffix != null
