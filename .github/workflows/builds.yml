@@ -137,7 +137,7 @@ jobs:
       # Building this repository with JDK 13+ (Java 11 target) including a GWT compilation (if required)
       - if: matrix.web-artifact-suffix != null
         name: Build this repository (JavaFx fat jar + GWT build)
-        run: mvn -P 'gwt-compile,javafx-fatjar' install
+        run: mvn -P 'gwt-compile,javafx-fatjar,javapackager' install
 
       # Or building this repository with JDK 13+ (Java 11 target) excluding a GWT compilation
       - if: matrix.web-artifact-suffix == null
@@ -156,7 +156,15 @@ jobs:
       # Copying the fat jar into the staging directory (will also be used for the final upload in the SNAPSHOT release)
       - if: matrix.fatjar-artifact-suffix != null
         name: Copy fat jar with JavaFx to staging
-        run: cp ${{ env.javafx-module }}/target/*-fat.jar staging/${{ env.application-name }}-${{ matrix.fatjar-artifact-suffix }}
+        run: |
+          cp ${{ env.javafx-module }}/target/*-fat.jar staging/${{ env.application-name }}-${{ matrix.fatjar-artifact-suffix }}
+          cp ${{ env.javafx-module }}/target/*.deb staging/
+          cp ${{ env.javafx-module }}/target/*.rpm staging/
+          cp ${{ env.javafx-module }}/target/*.exe staging/
+          cp ${{ env.javafx-module }}/target/*.msi staging/
+          cp ${{ env.javafx-module }}/target/*.msm staging/
+          cp ${{ env.javafx-module }}/target/*.dmg staging/
+          cp ${{ env.javafx-module }}/target/*.pkg staging/
 
       # Uploading it in the assets of this workflow run
       - if: matrix.fatjar-artifact-suffix != null

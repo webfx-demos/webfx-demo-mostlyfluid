@@ -62,6 +62,43 @@
                 </plugins>
             </build>
         </profile>
+
+
+        <profile>
+            <id>javapackager</id>
+
+            <build>
+                <plugins>
+
+                    <plugin>
+                        <groupId>io.github.fvarrui</groupId>
+                        <artifactId>javapackager</artifactId>
+                        <version>1.4.1</version>
+                        <executions>
+                            <execution>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>package</goal>
+                                </goals>
+                                <configuration>
+                                    <!-- mandatory -->
+                                    <mainClass>${webfx.mainClass}</mainClass>
+                                    <!-- optional -->
+                                    <bundleJre>true</bundleJre>
+                                    <name>ResponsiveDesign</name>
+                                    <organizationName>WebFx</organizationName>
+                                    <organizationUrl>https://webfx-project.org</organizationUrl>
+                                    <organizationEmail>info@webfx-project.org</organizationEmail>
+                                    <url>https://webfx-responsivedesign-demo.netlify.app</url>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+
+
+        </profile>
     </profiles>
 
 </project>
