@@ -239,7 +239,7 @@ jobs:
       - if: matrix.msi-desktop-artifact-suffix != null
         name: Create Windows Installer (msi)
         run: |
-             ${{ env.JAVA_HOME }}/bin/jlink -p "${{ env.JAVA_HOME }}/jmods" --add-modules java.desktop --strip-debug --no-header-files --no-man-pages --strip-native-commands --vm=server --compress=2 --output ./runtime
+             ${{ env.JAVA_HOME }}/bin/jlink -p "${{ env.JAVA_HOME }}\jmods" --add-modules java.desktop --strip-debug --no-header-files --no-man-pages --strip-native-commands --vm=server --compress=2 --output runtime
              ${{ env.JAVA_HOME }}/bin/jpackage --input ./target/ --name {{ env.application-name }} --main-jar webfx-demo-${{ matrix.app.module-token }}-application-javafx-0.1.0-SNAPSHOT.jar -type msi --runtime-image ./runtime --app-version 0.0.0 --win-per-user-install --win-menu --win-menu-group WebFx
         working-directory: ${{ env.javafx-module }}
 
