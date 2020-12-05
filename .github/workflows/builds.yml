@@ -245,7 +245,7 @@ jobs:
       # Creating the msi with jpackage
       - if: matrix.msi-desktop-artifact-suffix != null
         name: Create Windows Installer (msi) Step 2
-        run: ${{ env.JAVA_HOME }}\bin\jpackage --input .\target\ --name ${{ env.application-name }} --main-jar webfx-demo-${{ matrix.app.module-token }}-application-javafx-0.1.0-SNAPSHOT.jar -type msi --runtime-image runtime --app-version 0.0.0 --win-per-user-install --win-menu --win-menu-group WebFx
+        run: ${{ env.JAVA_HOME }}\bin\jpackage --input .\target\ --name ${{ env.application-name }} --main-jar webfx-demo-${{ matrix.app.module-token }}-application-javafx-0.1.0-SNAPSHOT.jar --type msi --runtime-image runtime --app-version 0.0.0 --win-per-user-install --win-menu --win-menu-group WebFx
         working-directory: ${{ env.javafx-module }}
 
 
