@@ -86,10 +86,11 @@
                                     <!-- optional -->
                                     <bundleJre>true</bundleJre>
                                     <name>ResponsiveDesign</name>
+                                    <displayName>Responsive Design</displayName>
+                                    <url>https://webfx-responsivedesign-demo.netlify.app</url>
                                     <organizationName>WebFx</organizationName>
                                     <organizationUrl>https://webfx-project.org</organizationUrl>
                                     <organizationEmail>info@webfx-project.org</organizationEmail>
-                                    <url>https://webfx-responsivedesign-demo.netlify.app</url>
                                     <outputDirectory>${project.build.directory}/javapackager</outputDirectory>
                                 </configuration>
                             </execution>

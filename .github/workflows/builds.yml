@@ -34,23 +34,29 @@ jobs:
             web-artifact-suffix:           'Web.war' # Must run on Linux because the Web branch push action runs only on Linux
             fatjar-artifact-suffix:        'Linux-x64.jar'
             gluon-desktop-arch-token:      'x86_64-linux'
-            gluon-desktop-artifact-suffix: 'Linux-x64-runnable'
+            gluon-desktop-artifact-suffix: 'Linux-x64-native-runnable'
             gluon-android-arch-token:      'aarch64-android'
-            gluon-android-artifact-suffix: 'Android-aarch64.apk'
+            gluon-android-artifact-suffix: 'Android-aarch64-native.apk'
+            embedjre-deb-artifact-suffix:  'Linux-x64-embedjre.deb'
+            embedjre-rpm-artifact-suffix:  'Linux-x64-embedjre.rpm'
           - os-config: 2
             os: windows-latest
             fatjar-artifact-suffix:        'Windows-x64.jar'
             gluon-desktop-arch-token:      'x86_64-windows'
-            gluon-desktop-artifact-suffix: 'Windows-x64.exe'
+            gluon-desktop-artifact-suffix: 'Windows-x64-native.exe'
             msi-desktop-artifact-suffix:   'Windows-x64.msi'
+            embedjre-exe-artifact-suffix:  'Windows-x64-embedjre.exe'
+            embedjre-msi-artifact-suffix:  'Windows-x64-embedjre.msi'
           - os-config: 3
             os: macos-latest
             fatjar-artifact-suffix:        'MacOS-x64.jar'
             gluon-desktop-arch-token:      'x86_64-darwin'
-            gluon-desktop-Artifact-suffix: 'MacOS-x64-runnable'
+            gluon-desktop-Artifact-suffix: 'MacOS-x64-native-runnable'
             # The iOS build needs the Apple certificate in secrets (steps will be skipped otherwise)
             gluon-ios-arch-token:          'arm64-ios'
-            gluon-ios-artifact-suffix:     'iOS-arm64.ipa'
+            gluon-ios-artifact-suffix:     'iOS-arm64-native.ipa'
+            embedjre-dmg-artifact-suffix:  'MacOS-x64-embedjre.dmg'
+            embedjre-pkg-artifact-suffix:  'MacOS-x64-embedjre.pkg'
 
     env:
       application-name: ${{ matrix.app.name }}
@@ -156,10 +162,25 @@ jobs:
       # Copying the fat jar into the staging directory (will also be used for the final upload in the SNAPSHOT release)
       - if: matrix.fatjar-artifact-suffix != null
         name: Copy fat jar with JavaFx to staging
-        run: |
-          cp ${{ env.javafx-module }}/target/*-fat.jar staging/${{ env.application-name }}-${{ matrix.fatjar-artifact-suffix }}
-          rm ${{ env.javafx-module }}/target/javapackager/*.jar
-          cp ${{ env.javafx-module }}/target/javapackager/*.* staging/
+        run: cp ${{ env.javafx-module }}/target/*-fat.jar staging/${{ env.application-name }}-${{ matrix.fatjar-artifact-suffix }}
+
+      - if: matrix.embedjre-deb-artifact-suffix != null
+        run: cp ${{ env.javafx-module }}/target/javapackager/*.deb staging/${{ env.application-name }}-${{ matrix.embedjre-deb-artifact-suffix }} | true
+
+      - if: matrix.embedjre-rpm-artifact-suffix != null
+        run: cp ${{ env.javafx-module }}/target/javapackager/*.rpm staging/${{ env.application-name }}-${{ matrix.embedjre-rpm-artifact-suffix }} | true
+
+      - if: matrix.embedjre-exe-artifact-suffix != null
+        run: cp ${{ env.javafx-module }}/target/javapackager/*.exe staging/${{ env.application-name }}-${{ matrix.embedjre-exe-artifact-suffix }}
+
+      - if: matrix.embedjre-msi-artifact-suffix != null
+        run: cp ${{ env.javafx-module }}/target/javapackager/*.msi staging/${{ env.application-name }}-${{ matrix.embedjre-msi-artifact-suffix }}
+
+      - if: matrix.embedjre-dmg-artifact-suffix != null
+        run: cp ${{ env.javafx-module }}/target/javapackager/*.dmg staging/${{ env.application-name }}-${{ matrix.embedjre-dmg-artifact-suffix }} | true
+
+      - if: matrix.embedjre-pkg-artifact-suffix != null
+        run: cp ${{ env.javafx-module }}/target/javapackager/*.pkg staging/${{ env.application-name }}-${{ matrix.embedjre-pkg-artifact-suffix }} | true
 
       # Uploading it in the assets of this workflow run
       - if: matrix.fatjar-artifact-suffix != null
