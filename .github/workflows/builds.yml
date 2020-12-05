@@ -329,7 +329,7 @@ jobs:
 
       - if: matrix.gluon-desktop-artifact-suffix != null && runner.os == 'Windows'
         name: Copy native Desktop to staging (Windows)
-        run: Copy-Item "${{ env.gluon-module }}/target/client/${{ matrix.gluon-desktop-arch-token }}/webfx-demo-*" -Destination "staging/${{ env.application-name }}-${{ matrix.gluon-desktop-artifact-suffix }}"
+        run: Copy-Item "${{ env.gluon-module }}/target/client/${{ matrix.gluon-desktop-arch-token }}/*.exe" -Destination "staging/${{ env.application-name }}-${{ matrix.gluon-desktop-artifact-suffix }}"
 
       # Uploading it in the assets of this workflow run
       - if: matrix.gluon-desktop-artifact-suffix != null
