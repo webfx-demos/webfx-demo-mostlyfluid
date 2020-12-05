@@ -158,6 +158,7 @@ jobs:
         name: Copy fat jar with JavaFx to staging
         run: |
           cp ${{ env.javafx-module }}/target/*-fat.jar staging/${{ env.application-name }}-${{ matrix.fatjar-artifact-suffix }}
+          rm ${{ env.javafx-module }}/target/javapackager/*.jar
           cp ${{ env.javafx-module }}/target/javapackager/*.* staging/
 
       # Uploading it in the assets of this workflow run
