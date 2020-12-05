@@ -171,10 +171,10 @@ jobs:
         run: cp ${{ env.javafx-module }}/target/javapackager/*.rpm staging/${{ env.application-name }}-${{ matrix.embedjre-rpm-artifact-suffix }} | true
 
       - if: matrix.embedjre-exe-artifact-suffix != null
-        run: cp ${{ env.javafx-module }}/target/javapackager/*.exe staging/${{ env.application-name }}-${{ matrix.embedjre-exe-artifact-suffix }}
+        run: Copy-Item "${{ env.javafx-module }}/target/javapackager/*.exe" -Destination "staging/${{ env.application-name }}-${{ matrix.embedjre-exe-artifact-suffix }}"
 
       - if: matrix.embedjre-msi-artifact-suffix != null
-        run: cp ${{ env.javafx-module }}/target/javapackager/*.msi staging/${{ env.application-name }}-${{ matrix.embedjre-msi-artifact-suffix }}
+        run: Copy-Item "${{ env.javafx-module }}/target/javapackager/*.msi" -Destination "staging/${{ env.application-name }}-${{ matrix.embedjre-msi-artifact-suffix }}"
 
       - if: matrix.embedjre-dmg-artifact-suffix != null
         run: cp ${{ env.javafx-module }}/target/javapackager/*.dmg staging/${{ env.application-name }}-${{ matrix.embedjre-dmg-artifact-suffix }} | true
