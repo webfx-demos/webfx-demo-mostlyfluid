@@ -111,6 +111,10 @@ jobs:
         with:
           java-version: ${{ env.jdk-version }}
 
+      # The staging directory will be used to store all artifacts built in this job for upload
+      - name: Make staging directory
+        run: mkdir staging
+
 
       ##################################################################################################################
       #             Building WebFx + this repository (jars + javafx fat jar + Web build (GWT) if required)             #
@@ -145,50 +149,30 @@ jobs:
       #  8) App-macOS-x64.jar : Java archive (fat jar with JavaFx for MacOS)                                           #
       ##################################################################################################################
 
-
-      # Uploading 1)
+      # Copying the fat jar into the staging directory (will also be used for the final upload in the SNAPSHOT release)
       - if: matrix.fatjar-artifact-suffix != null
-        name: Upload this fat jar artifact as asset of this worflow run
-        uses: actions/upload-artifact@v2
-        with:
-          name: ${{ env.application-name }}-${{ matrix.fatjar-artifact-suffix }}
-          path: ${{ env.javafx-module }}/target/*-fat.jar
+        name: Copy fat jar with JavaFx to staging
+        run: cp ${{ env.javafx-module }}/target/*-fat.jar staging/${{ env.application-name }}-${{ matrix.fatjar-artifact-suffix }}
 
       - if: matrix.jvmbundle-deb-artifact-suffix != null
-        uses: actions/upload-artifact@v2
-        with:
-          name: ${{ env.application-name }}-${{ matrix.jvmbundle-deb-artifact-suffix }}
-          path: ${{ env.javafx-module }}/target/javapackager/*.deb
+        run: cp ${{ env.javafx-module }}/target/javapackager/*.deb staging/${{ env.application-name }}-${{ matrix.jvmbundle-deb-artifact-suffix }} | true
 
       - if: matrix.jvmbundle-rpm-artifact-suffix != null
-        uses: actions/upload-artifact@v2
-        with:
-          name: ${{ env.application-name }}-${{ matrix.jvmbundle-rpm-artifact-suffix }}
-          path: ${{ env.javafx-module }}/target/javapackager/*.rpm
+        run: cp ${{ env.javafx-module }}/target/javapackager/*.rpm staging/${{ env.application-name }}-${{ matrix.jvmbundle-rpm-artifact-suffix }} | true
 
       - if: matrix.jvmbundle-exe-artifact-suffix != null
-        uses: actions/upload-artifact@v2
-        with:
-          name: ${{ env.application-name }}-${{ matrix.jvmbundle-exe-artifact-suffix }}
-          path: ${{ env.javafx-module }}/target/javapackager/*.exe
+        run: Copy-Item "${{ env.javafx-module }}/target/javapackager/*.exe" -Destination "staging/${{ env.application-name }}-${{ matrix.jvmbundle-exe-artifact-suffix }}"
 
       - if: matrix.jvmbundle-msi-artifact-suffix != null
-        uses: actions/upload-artifact@v2
-        with:
-          name: ${{ env.application-name }}-${{ matrix.jvmbundle-msi-artifact-suffix }}
-          path: ${{ env.javafx-module }}/target/javapackager/*.msi
+        run: |
+          dir ${{ env.javafx-module }}/target/javapackager/
+          Copy-Item "${{ env.javafx-module }}/target/javapackager/*.msi" -Destination "staging/${{ env.application-name }}-${{ matrix.jvmbundle-msi-artifact-suffix }}"
 
       - if: matrix.jvmbundle-dmg-artifact-suffix != null
-        uses: actions/upload-artifact@v2
-        with:
-          name: ${{ env.application-name }}-${{ matrix.jvmbundle-dmg-artifact-suffix }}
-          path: ${{ env.javafx-module }}/target/javapackager/*.dmg
+        run: cp ${{ env.javafx-module }}/target/javapackager/*.dmg staging/${{ env.application-name }}-${{ matrix.jvmbundle-dmg-artifact-suffix }} | true
 
       - if: matrix.jvmbundle-pkg-artifact-suffix != null
-        uses: actions/upload-artifact@v2
-        with:
-          name: ${{ env.application-name }}-${{ matrix.jvmbundle-pkg-artifact-suffix }}
-          path: ${{ env.javafx-module }}/target/javapackager/*.pkg
+        run: cp ${{ env.javafx-module }}/target/javapackager/*.pkg staging/${{ env.application-name }}-${{ matrix.jvmbundle-pkg-artifact-suffix }} | true
 
 
       ##################################################################################################################
@@ -197,13 +181,10 @@ jobs:
       #  2) App-Web.war : Web app (built with GWT)                                                                     #
       ##################################################################################################################
 
-      # Uploading it in the assets of this workflow run
+      # Copying the Web archive into the staging directory (will also be used for the final upload in the SNAPSHOT release)
       - if: matrix.web-artifact-suffix != null
-        name: Upload GWT build as an artifact of this workflow run
-        uses: actions/upload-artifact@v2
-        with:
-          name: ${{ env.application-name }}-${{ matrix.web-artifact-suffix }}
-          path: ${{ env.gwt-module }}/target/*.war
+        name: Copy Web archive to staging
+        run: cp ${{ env.gwt-module }}/target/*.war staging/${{ env.application-name }}-${{ matrix.web-artifact-suffix }}
 
 
       ##################################################################################################################
@@ -246,13 +227,10 @@ jobs:
       #  6) App-Windows-x64.msi : Windows installer (msi)                                                              #
       ##################################################################################################################
 
-      # Uploading it in the assets of this workflow run
+      # Copying the msi file into the staging directory (will also be used for the final upload in the SNAPSHOT release)
       - if: matrix.msi-desktop-artifact-suffix != null
-        name: Upload Windows installer
-        uses: actions/upload-artifact@v2
-        with:
-          name: ${{ env.application-name }}-${{ matrix.msi-desktop-artifact-suffix }}
-          path: ${{ env.javafx-module }}/*.msi
+        name: Copy Windows installer to staging
+        run: cp ${{ env.javafx-module }}/*.msi staging/${{ env.application-name }}-${{ matrix.msi-desktop-artifact-suffix }}
 
 
       ##################################################################################################################
@@ -315,21 +293,14 @@ jobs:
       #  9) App-macOS-x64-executable : MacOS desktop native app (Gluon)                                                #
       ##################################################################################################################
 
-      # Uploading it in the assets of this workflow run
+      # Copying the app into the staging directory (will also be used for the final upload in the SNAPSHOT release)
       - if: matrix.gluon-desktop-artifact-suffix != null && runner.os != 'Windows'
-        name: Upload native Desktop as an artifact of this workflow run
-        uses: actions/upload-artifact@v2
-        with:
-          name: ${{ env.application-name }}-${{ matrix.gluon-desktop-artifact-suffix }}
-          path: ${{ env.gluon-module }}/target/client/${{ matrix.gluon-desktop-arch-token }}/webfx-demo-*
+        name: Copy native Desktop to staging (Linux or MacOS)
+        run: cp ${{ env.gluon-module }}/target/client/${{ matrix.gluon-desktop-arch-token }}/webfx-demo-* staging/${{ env.application-name }}-${{ matrix.gluon-desktop-artifact-suffix }}
 
-      # Uploading it in the assets of this workflow run
       - if: matrix.gluon-desktop-artifact-suffix != null && runner.os == 'Windows'
-        name: Upload native Desktop as an artifact of this workflow run
-        uses: actions/upload-artifact@v2
-        with:
-          name: ${{ env.application-name }}-${{ matrix.gluon-desktop-artifact-suffix }}
-          path: ${{ env.gluon-module }}/target/client/${{ matrix.gluon-desktop-arch-token }}/*.exe
+        name: Copy native Desktop to staging (Windows)
+        run: Copy-Item "${{ env.gluon-module }}/target/client/${{ matrix.gluon-desktop-arch-token }}/*.exe" -Destination "staging/${{ env.application-name }}-${{ matrix.gluon-desktop-artifact-suffix }}"
 
 
       ##################################################################################################################
@@ -355,13 +326,10 @@ jobs:
       #  4) App-Android-aarch64.apk : Android native app (built with Gluon)                                            #
       ##################################################################################################################
 
-      # Uploading it in the assets of this workflow run
+      # Copying the app into the staging directory (will also be used for the final upload in the SNAPSHOT release)
       - if: matrix.gluon-android-arch-token != null
-        name: Upload Android native application as an artifact of this workflow run
-        uses: actions/upload-artifact@v2
-        with:
-          name: ${{ env.application-name }}-${{ matrix.gluon-android-artifact-suffix }}
-          path: ${{ env.gluon-module }}/target/client/${{ matrix.gluon-android-arch-token }}/gvm/*.apk
+        name: Copy Android native application to staging
+        run: cp ${{ env.gluon-module }}/target/client/${{ matrix.gluon-android-arch-token }}/gvm/*.apk staging/${{ env.application-name }}-${{ matrix.gluon-android-artifact-suffix }}
 
 
       ##################################################################################################################
@@ -401,13 +369,10 @@ jobs:
       # 10) App-iOS-arm64.ipa : iOS native app (Gluon)                                                                 #
       ##################################################################################################################
 
-      # Uploading it in the assets of this workflow run
+      # Copying the app into the staging directory (will also be used for the final upload in the SNAPSHOT release)
       - if: matrix.gluon-ios-arch-token != null && env.GLUON_IOS_CERTIFICATES_FILE_BASE64 != ''
-        name: Upload iOS native application as an artifact of this workflow run
-        uses: actions/upload-artifact@v2
-        with:
-          name: ${{ env.application-name }}-${{ matrix.gluon-ios-artifact-suffix }}
-          path: ${{ env.gluon-module }}/target/client/${{ matrix.gluon-ios-arch-token }}/gvm/*.ipa
+        name: Copy iOS native application to staging
+        run: cp ${{ env.gluon-module }}/target/client/${{ matrix.gluon-ios-arch-token }}/gvm/*.ipa staging/${{ env.application-name }}-${{ matrix.gluon-ios-artifact-suffix }}
 
 
       ##################################################################################################################
@@ -419,10 +384,17 @@ jobs:
       - if: env.GLUON_IOS_APPSTORE_KEY_ID != ''
         uses: Apple-Actions/upload-testflight-build@master
         with:
-          app-path: ${{ env.gluon-module }}/target/client/${{ matrix.gluon-ios-arch-token }}/gvm/*.ipa
+          app-path: staging/${{ env.application-name }}-${{ matrix.gluon-ios-artifact-suffix }}
           issuer-id: ${{ secrets.GLUON_IOS_APPSTORE_ISSUER_ID }}
           api-key-id: ${{ secrets.GLUON_IOS_APPSTORE_KEY_ID }}
           api-private-key: ${{ secrets.GLUON_IOS_APPSTORE_PRIVATE_KEY }}
+
+      # Uploading all artifacts in the assets of this workflow run
+      - name: Upload artifacts in the assets of this worflow run
+        uses: actions/upload-artifact@v2
+        with:
+          name: os-config-${{ matrix.os-config }}
+          path: staging/*
 
 
       ##################################################################################################################
@@ -448,19 +420,21 @@ jobs:
 
     steps:
 
-      # The staging directory will be used to download all artifacts generated by the build job and to upload them in the SNAPSHOT release
-      - name: Make staging directory
-        run: mkdir staging
+      - name: Make download directory
+        run: mkdir download
 
       # Downloading the artifacts generated by the build job in to the staging directory
       - if: env.API_GITHUB_TOKEN != ''
         name: Download artifacts into staging directory
         uses: actions/download-artifact@v2
         with:
-          path: staging
+          path: download
+
+      - name: Make upload directory
+        run: mkdir upload
 
       # Moving all files to staging root
-      - run: find staging -type f -exec mv -t staging {} +
+      - run: find download -type f -exec mv -t upload {} +
 
       # Clearing SNAPSHOT release assets
       - if: env.API_GITHUB_TOKEN != ''
@@ -478,5 +452,5 @@ jobs:
         uses: AButler/upload-release-assets@v2.0
         with:
           release-tag: SNAPSHOT
-          files: staging/*
+          files: upload/*
           repo-token: ${{ secrets.API_GITHUB_TOKEN }}
