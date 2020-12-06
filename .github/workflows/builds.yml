@@ -60,14 +60,14 @@ jobs:
 
           - os-config: 4 # Generates builds 11) 12) 13) 14) & 15)
             os: macos-latest
-            fatjar-artifact-suffix:        'MacOS-x64.jar'              # build 11)
-            jvm-dmg-artifact-suffix:       'MacOS-x64-jvm.dmg'          # build 12)
-            jvm-pkg-artifact-suffix:       'MacOS-x64-jvm.pkg'          # build 13)
-            gluon-desktop-arch-token:      'x86_64-darwin'              # build 14)
-            gluon-desktop-Artifact-suffix: 'MacOS-x64-native-runnable'  # build 14)
+            fatjar-artifact-suffix:        'MacOS-x64.jar'                      # build 11)
+            jvm-dmg-artifact-suffix:       'MacOS-x64-jvm.dmg'                  # build 12)
+            jvm-pkg-artifact-suffix:       'MacOS-x64-jvm.pkg'                  # build 13)
+            gluon-desktop-arch-token:      'x86_64-darwin'                      # build 14)
+            gluon-desktop-Artifact-suffix: 'MacOS-x64-native-runnable'          # build 14)
             # Note: the iOS build needs the Apple certificate in secrets (the steps will be skipped otherwise)
-            gluon-ios-arch-token:          'arm64-ios'                  # build 15)
-            gluon-ios-artifact-suffix:     'iOS-arm64-native.ipa'       # build 15)
+            gluon-ios-arch-token:          'arm64-ios'                          # build 15)
+            gluon-ios-artifact-suffix:     'iOS-arm64-native.ipa'               # build 15)
 
     env:
       application-name: ${{ matrix.app.name }}
@@ -182,16 +182,16 @@ jobs:
       ##################################################################################################################
       #                                           Staging artifacts                                                    #
       ##################################################################################################################
-      # On Ubuntu:                                                                                    #
+      # On Ubuntu:                                                                                                     #
       #  1) App-Web.war : Web app (built with GWT)                                                                     #
       #  2) App-Linux-x64-runnable.jar : Java archive (fat jar with JavaFx for Linux)                                  #
       #  3) App-Linux-x64-jvm-package.deb                                                                              #
       #  4) App-Linux-x64-jvm-package.rpm                                                                              #
-      # On Windows:                                                                                   #
+      # On Windows:                                                                                                    #
       #  7) App-Windows-x64-runnable.jar : Java archive (fat jar with JavaFx for Windows)                              #
       #  8) App-Windows-x64-jvm-installer.exe : Windows installer (exe)                                                #
       #  9) App-Windows-x64-jvm-installer.msi : Windows installer (msi)                                                #
-      # On MacOS:                                                                                     #
+      # On MacOS:                                                                                                      #
       # 11) App-MacOS-x64-runnable.jar : Java archive (fat jar with JavaFx for MacOS)                                  #
       # 12) App-MacOs-x64-jvm-package.dmg                                                                              #
       # 13) App-MacOS-x64-jvm-package.pkg                                                                              #
