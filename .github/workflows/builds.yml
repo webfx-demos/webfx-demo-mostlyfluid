@@ -34,8 +34,8 @@ jobs:
             fatjar-artifact-suffix:        'Linux-x64.jar'
             gluon-desktop-arch-token:      'x86_64-linux'
             gluon-desktop-artifact-suffix: 'Linux-x64-native-runnable'
-            bundlejvm-deb-artifact-suffix: 'Linux-x64-bundlejvm.deb'
-            bundlejvm-rpm-artifact-suffix: 'Linux-x64-bundlejvm.rpm'
+            jvmbundle-deb-artifact-suffix: 'Linux-x64-jvmbundle.deb'
+            jvmbundle-rpm-artifact-suffix: 'Linux-x64-jvmbundle.rpm'
 
           - os-config: 2 # Generates builds 2) & 4) - Could be in os-config 1 but moving these builds to this parallel run to speeds up the
             os: ubuntu-latest
@@ -48,9 +48,9 @@ jobs:
             fatjar-artifact-suffix:        'Windows-x64.jar'
             gluon-desktop-arch-token:      'x86_64-windows'
             gluon-desktop-artifact-suffix: 'Windows-x64-native.exe'
-            msi-desktop-artifact-suffix:   'Windows-x64-bundlejvm.msi'
-            bundlejvm-exe-artifact-suffix: 'Windows-x64-bundlejvm.exe'
-            bundlejvm-msi-artifact-suffix: 'Windows-x64-bundlejvm.msi'
+            msi-desktop-artifact-suffix:   'Windows-x64-jvmbundle.msi'
+            jvmbundle-exe-artifact-suffix: 'Windows-x64-jvmbundle.exe'
+            jvmbundle-msi-artifact-suffix: 'Windows-x64-jvmbundle.msi'
 
           - os-config: 4 # Generates builds 8) 9) & 10)
             os: macos-latest
@@ -60,8 +60,8 @@ jobs:
             # The iOS build needs the Apple certificate in secrets (steps will be skipped otherwise)
             gluon-ios-arch-token:          'arm64-ios'
             gluon-ios-artifact-suffix:     'iOS-arm64-native.ipa'
-            bundlejvm-dmg-artifact-suffix:  'MacOS-x64-bundlejvm.dmg'
-            bundlejvm-pkg-artifact-suffix:  'MacOS-x64-bundlejvm.pkg'
+            jvmbundle-dmg-artifact-suffix:  'MacOS-x64-jvmbundle.dmg'
+            jvmbundle-pkg-artifact-suffix:  'MacOS-x64-jvmbundle.pkg'
 
     env:
       application-name: ${{ matrix.app.name }}
@@ -154,33 +154,25 @@ jobs:
         name: Copy fat jar with JavaFx to staging
         run: cp ${{ env.javafx-module }}/target/*-fat.jar staging/${{ env.application-name }}-${{ matrix.fatjar-artifact-suffix }}
 
-      - if: matrix.bundlejvm-deb-artifact-suffix != null
-        run: cp ${{ env.javafx-module }}/target/javapackager/*.deb staging/${{ env.application-name }}-${{ matrix.bundlejvm-deb-artifact-suffix }} | true
+      - if: matrix.jvmbundle-deb-artifact-suffix != null
+        run: cp ${{ env.javafx-module }}/target/javapackager/*.deb staging/${{ env.application-name }}-${{ matrix.jvmbundle-deb-artifact-suffix }} | true
 
-      - if: matrix.bundlejvm-rpm-artifact-suffix != null
-        run: cp ${{ env.javafx-module }}/target/javapackager/*.rpm staging/${{ env.application-name }}-${{ matrix.bundlejvm-rpm-artifact-suffix }} | true
+      - if: matrix.jvmbundle-rpm-artifact-suffix != null
+        run: cp ${{ env.javafx-module }}/target/javapackager/*.rpm staging/${{ env.application-name }}-${{ matrix.jvmbundle-rpm-artifact-suffix }} | true
 
-      - if: matrix.bundlejvm-exe-artifact-suffix != null
-        run: Copy-Item "${{ env.javafx-module }}/target/javapackager/*.exe" -Destination "staging/${{ env.application-name }}-${{ matrix.bundlejvm-exe-artifact-suffix }}"
+      - if: matrix.jvmbundle-exe-artifact-suffix != null
+        run: Copy-Item "${{ env.javafx-module }}/target/javapackager/*.exe" -Destination "staging/${{ env.application-name }}-${{ matrix.jvmbundle-exe-artifact-suffix }}"
 
-      - if: matrix.bundlejvm-msi-artifact-suffix != null
+      - if: matrix.jvmbundle-msi-artifact-suffix != null
         run: |
           dir ${{ env.javafx-module }}/target/javapackager/
-          Copy-Item "${{ env.javafx-module }}/target/javapackager/*.msi" -Destination "staging/${{ env.application-name }}-${{ matrix.bundlejvm-msi-artifact-suffix }}"
+          Copy-Item "${{ env.javafx-module }}/target/javapackager/*.msi" -Destination "staging/${{ env.application-name }}-${{ matrix.jvmbundle-msi-artifact-suffix }}"
 
-      - if: matrix.bundlejvm-dmg-artifact-suffix != null
-        run: cp ${{ env.javafx-module }}/target/javapackager/*.dmg staging/${{ env.application-name }}-${{ matrix.bundlejvm-dmg-artifact-suffix }} | true
+      - if: matrix.jvmbundle-dmg-artifact-suffix != null
+        run: cp ${{ env.javafx-module }}/target/javapackager/*.dmg staging/${{ env.application-name }}-${{ matrix.jvmbundle-dmg-artifact-suffix }} | true
 
-      - if: matrix.bundlejvm-pkg-artifact-suffix != null
-        run: cp ${{ env.javafx-module }}/target/javapackager/*.pkg staging/${{ env.application-name }}-${{ matrix.bundlejvm-pkg-artifact-suffix }} | true
-
-      # Uploading it in the assets of this workflow run
-      - if: matrix.fatjar-artifact-suffix != null
-        name: Upload this fat jar artifact as asset of this worflow run
-        uses: actions/upload-artifact@v2
-        with:
-          name: ${{ env.application-name }}-${{ matrix.fatjar-artifact-suffix }}
-          path: staging/*${{ matrix.fatjar-artifact-suffix }}
+      - if: matrix.jvmbundle-pkg-artifact-suffix != null
+        run: cp ${{ env.javafx-module }}/target/javapackager/*.pkg staging/${{ env.application-name }}-${{ matrix.jvmbundle-pkg-artifact-suffix }} | true
 
 
       ##################################################################################################################
@@ -193,14 +185,6 @@ jobs:
       - if: matrix.web-artifact-suffix != null
         name: Copy Web archive to staging
         run: cp ${{ env.gwt-module }}/target/*.war staging/${{ env.application-name }}-${{ matrix.web-artifact-suffix }}
-
-      # Uploading it in the assets of this workflow run
-      - if: matrix.web-artifact-suffix != null
-        name: Upload GWT build as an artifact of this workflow run
-        uses: actions/upload-artifact@v2
-        with:
-          name: ${{ env.application-name }}-${{ matrix.web-artifact-suffix }}
-          path: staging/*${{ matrix.web-artifact-suffix }}
 
 
       ##################################################################################################################
@@ -247,14 +231,6 @@ jobs:
       - if: matrix.msi-desktop-artifact-suffix != null
         name: Copy Windows installer to staging
         run: cp ${{ env.javafx-module }}/*.msi staging/${{ env.application-name }}-${{ matrix.msi-desktop-artifact-suffix }}
-
-      # Uploading it in the assets of this workflow run
-      - if: matrix.msi-desktop-artifact-suffix != null
-        name: Upload Windows installer
-        uses: actions/upload-artifact@v2
-        with:
-          name: ${{ env.application-name }}-${{ matrix.msi-desktop-artifact-suffix }}
-          path: staging/*${{ matrix.msi-desktop-artifact-suffix }}
 
 
       ##################################################################################################################
@@ -326,14 +302,6 @@ jobs:
         name: Copy native Desktop to staging (Windows)
         run: Copy-Item "${{ env.gluon-module }}/target/client/${{ matrix.gluon-desktop-arch-token }}/*.exe" -Destination "staging/${{ env.application-name }}-${{ matrix.gluon-desktop-artifact-suffix }}"
 
-      # Uploading it in the assets of this workflow run
-      - if: matrix.gluon-desktop-artifact-suffix != null
-        name: Upload native Desktop as an artifact of this workflow run
-        uses: actions/upload-artifact@v2
-        with:
-          name: ${{ env.application-name }}-${{ matrix.gluon-desktop-artifact-suffix }}
-          path: staging/*${{ matrix.gluon-desktop-artifact-suffix }}
-
 
       ##################################################################################################################
       #                            Building the native Android app using Gluon/GraalVM                                 #
@@ -362,14 +330,6 @@ jobs:
       - if: matrix.gluon-android-arch-token != null
         name: Copy Android native application to staging
         run: cp ${{ env.gluon-module }}/target/client/${{ matrix.gluon-android-arch-token }}/gvm/*.apk staging/${{ env.application-name }}-${{ matrix.gluon-android-artifact-suffix }}
-
-      # Uploading it in the assets of this workflow run
-      - if: matrix.gluon-android-arch-token != null
-        name: Upload Android native application as an artifact of this workflow run
-        uses: actions/upload-artifact@v2
-        with:
-          name: ${{ env.application-name }}-${{ matrix.gluon-android-artifact-suffix }}
-          path: staging/*${{ matrix.gluon-android-artifact-suffix }}
 
 
       ##################################################################################################################
@@ -414,14 +374,6 @@ jobs:
         name: Copy iOS native application to staging
         run: cp ${{ env.gluon-module }}/target/client/${{ matrix.gluon-ios-arch-token }}/gvm/*.ipa staging/${{ env.application-name }}-${{ matrix.gluon-ios-artifact-suffix }}
 
-      # Uploading it in the assets of this workflow run
-      - if: matrix.gluon-ios-arch-token != null && env.GLUON_IOS_CERTIFICATES_FILE_BASE64 != ''
-        name: Upload iOS native application as an artifact of this workflow run
-        uses: actions/upload-artifact@v2
-        with:
-          name: ${{ env.application-name }}-${{ matrix.gluon-ios-artifact-suffix }}
-          path: staging/*${{ matrix.gluon-ios-artifact-suffix }}
-
 
       ##################################################################################################################
       #                             Publishing the native iOS app in the Apple Store                                   #
@@ -453,6 +405,13 @@ jobs:
       # 10) App-iOS-arm64.ipa : iOS native app (Gluon)                                                                 #
       ##################################################################################################################
 
+      # Uploading all artifacts in the assets of this workflow run
+      - name: Upload artifacts in the assets of this worflow run
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ env.application-name }}-${{ matrix.fatjar-artifact-suffix }}
+          path: staging/*
+
   upload:
     needs: build
     runs-on: ubuntu-latest
@@ -463,14 +422,16 @@ jobs:
 
       # The staging directory will be used to download all artifacts generated by the build job and to upload them in the SNAPSHOT release
       - name: Make staging directory
-        run: mkdir /staging
+        run: mkdir staging
 
       # Downloading the artifacts generated by the build job in to the staging directory
       - if: env.API_GITHUB_TOKEN != ''
         name: Download artifacts into staging directory
         uses: actions/download-artifact@v2
         with:
-          path: /staging
+          path: staging
+
+      - run: ls staging
 
       # Clearing SNAPSHOT release assets
       - if: env.API_GITHUB_TOKEN != ''
@@ -488,5 +449,5 @@ jobs:
         uses: AButler/upload-release-assets@v2.0
         with:
           release-tag: SNAPSHOT
-          files: /staging/*
+          files: staging/*
           repo-token: ${{ secrets.API_GITHUB_TOKEN }}
