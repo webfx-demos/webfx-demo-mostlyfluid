@@ -101,18 +101,18 @@ jobs:
         name: Configure Git for long filenames (Windows only)
         run: git config --global core.longpaths true
 
-      # Checkout this repository (before WebFx repository because this checkout would erase the WebFx folder)
-      - name: Checkout this repository
-        uses: actions/checkout@v2
-        with:
-          path: ${{ env.this-module }}
-
-      # Checkout WebFx repository (we need to build it as a prerequisite because there is no release yet)
+      # Checkout WebFx repository (we need to build it as well because there is no release yet)
       - name: Checkout WebFx repository
         uses: actions/checkout@v2
         with:
           repository: 'webfx-project/webfx'
           path: ${{ env.webfx-module }}
+
+      # Checkout this repository
+      - name: Checkout this repository
+        uses: actions/checkout@v2
+        with:
+          path: ${{ env.this-module }}
 
       # Set up the JDK (WebFx requires JDK13+ due to javac bugs in prior versions - otherwise JDK11+ should be enough in theory)
       - name: Set up JDK ${{ env.jdk-version }}
@@ -152,11 +152,13 @@ jobs:
       - if: matrix.web-artifact-suffix != null
         name: Build this repository (JavaFx fat jar + GWT build)
         run: mvn -P 'gwt-compile,javafx-fatjar,javapackager' install
+        working-directory: ${{ env.this-module }}
 
       # Or building this repository with JDK 13+ (Java 11 target) excluding a GWT compilation
       - if: matrix.web-artifact-suffix == null
         name: Build this repository (JavaFx fat jar - no GWT build)
         run: mvn -P '!gwt-compile,javafx-fatjar,javapackager' install
+        working-directory: ${{ env.this-module }}
 
 
       ##################################################################################################################
