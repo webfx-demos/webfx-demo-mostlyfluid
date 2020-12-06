@@ -29,17 +29,17 @@ jobs:
         app: [{name: 'ResponsiveDesign', module-token: 'responsivedesign', bundle-id: 'org.webfx.demo.responsivedesign'}]
         os-config:  [1, 2, 3, 4]
         include:
-          - os-config: 1 # Generates builds 1) & 3)
+          - os-config: 1 # Generates builds 1) 2) & 3)
             os: ubuntu-latest
             fatjar-artifact-suffix:        'Linux-x64.jar'
+            web-artifact-suffix:           'Web.war' # Must run on Linux because the Web branch push action runs only on Linux
             gluon-desktop-arch-token:      'x86_64-linux'
             gluon-desktop-artifact-suffix: 'Linux-x64-native-runnable'
             jvmbundle-deb-artifact-suffix: 'Linux-x64-jvmbundle.deb'
             jvmbundle-rpm-artifact-suffix: 'Linux-x64-jvmbundle.rpm'
 
-          - os-config: 2 # Generates builds 2) & 4) - Could be in os-config 1 but moving these builds to this parallel run to speeds up the
+          - os-config: 2 # Generates builds 4) - Could be in os-config 1 but moving these builds to this parallel run to speeds up the
             os: ubuntu-latest
-            web-artifact-suffix:           'Web.war' # Must run on Linux because the Web branch push action runs only on Linux
             gluon-android-arch-token:      'aarch64-android'
             gluon-android-artifact-suffix: 'Android-aarch64-native.apk'
 
@@ -409,7 +409,6 @@ jobs:
       - name: Upload artifacts in the assets of this worflow run
         uses: actions/upload-artifact@v2
         with:
-          name: ${{ env.application-name }}-${{ matrix.fatjar-artifact-suffix }}
           path: staging/*
 
   upload:
