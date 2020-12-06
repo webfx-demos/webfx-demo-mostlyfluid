@@ -71,11 +71,12 @@ jobs:
 
     env:
       application-name: ${{ matrix.app.name }}
-      webfx-module:     ./webfx
-      javafx-module:    ./webfx-demo-${{ matrix.app.module-token }}-application-javafx
-      gwt-module:       ./webfx-demo-${{ matrix.app.module-token }}-application-gwt
-      gwt-build:        ./webfx-demo-${{ matrix.app.module-token }}-application-gwt/target/webfx-demo-${{ matrix.app.module-token }}-application-gwt-0.1.0-SNAPSHOT/webfx_demo_${{ matrix.app.module-token }}_application_gwt/
-      gluon-module:     ./webfx-demo-${{ matrix.app.module-token }}-application-gluon
+      webfx-module:     ./
+      this-module:      ./module
+      javafx-module:    ./module/webfx-demo-${{ matrix.app.module-token }}-application-javafx
+      gwt-module:       ./module/webfx-demo-${{ matrix.app.module-token }}-application-gwt
+      gwt-build:        ./module/webfx-demo-${{ matrix.app.module-token }}-application-gwt/target/webfx-demo-${{ matrix.app.module-token }}-application-gwt-0.1.0-SNAPSHOT/webfx_demo_${{ matrix.app.module-token }}_application_gwt/
+      gluon-module:     ./module/webfx-demo-${{ matrix.app.module-token }}-application-gluon
       web-push-repository-name: webfx-demo-${{ matrix.app.module-token }} # This same repository (Github doesn't provide ${{ github.repository_name }}
       web-push-repository-owner: ${{ github.repository_owner }}
       web-push-branch: 'web-build'
@@ -103,6 +104,8 @@ jobs:
       # Checkout this repository (before WebFx repository because this checkout would erase the WebFx folder)
       - name: Checkout this repository
         uses: actions/checkout@v2
+        with:
+          path: ${{ env.this-module }}
 
       # Checkout WebFx repository (we need to build it as a prerequisite because there is no release yet)
       - name: Checkout WebFx repository
@@ -141,9 +144,9 @@ jobs:
       ##################################################################################################################
 
       # Building the latest WebFx version locally (since there is no public release yet)
-      - name: Build WebFx with JDK ${{ env.jdk-version }} (Java 11 target)
-        run: mvn -P '!gwt-compile' install
-        working-directory: ${{ env.webfx-module }}
+      #- name: Build WebFx with JDK ${{ env.jdk-version }} (Java 11 target)
+      #  run: mvn -P '!gwt-compile' install
+      #  working-directory: ${{ env.webfx-module }}
 
       # Building this repository with JDK 13+ (Java 11 target) including a GWT compilation (if required)
       - if: matrix.web-artifact-suffix != null
