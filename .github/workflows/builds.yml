@@ -27,27 +27,32 @@ jobs:
     strategy:
       matrix:
         app: [{name: 'ResponsiveDesign', module-token: 'responsivedesign', bundle-id: 'org.webfx.demo.responsivedesign'}]
-        os-config:  [1, 2, 3]
+        os-config:  [1, 2, 3, 4]
         include:
-          - os-config: 1
+          - os-config: 1 # Generates builds 1) & 3)
             os: ubuntu-latest
-            web-artifact-suffix:           'Web.war' # Must run on Linux because the Web branch push action runs only on Linux
             fatjar-artifact-suffix:        'Linux-x64.jar'
             gluon-desktop-arch-token:      'x86_64-linux'
             gluon-desktop-artifact-suffix: 'Linux-x64-native-runnable'
+            bundlejvm-deb-artifact-suffix: 'Linux-x64-bundlejvm.deb'
+            bundlejvm-rpm-artifact-suffix: 'Linux-x64-bundlejvm.rpm'
+
+          - os-config: 2 # Generates builds 2) & 4) - Could be in os-config 1 but moving these builds to this parallel run to speeds up the
+            os: ubuntu-latest
+            web-artifact-suffix:           'Web.war' # Must run on Linux because the Web branch push action runs only on Linux
             gluon-android-arch-token:      'aarch64-android'
             gluon-android-artifact-suffix: 'Android-aarch64-native.apk'
-            embedjre-deb-artifact-suffix:  'Linux-x64-embedjre.deb'
-            embedjre-rpm-artifact-suffix:  'Linux-x64-embedjre.rpm'
-          - os-config: 2
+
+          - os-config: 3 # Generates builds 5) 6) & 7)
             os: windows-latest
             fatjar-artifact-suffix:        'Windows-x64.jar'
             gluon-desktop-arch-token:      'x86_64-windows'
             gluon-desktop-artifact-suffix: 'Windows-x64-native.exe'
-            msi-desktop-artifact-suffix:   'Windows-x64-embedjre.msi'
-            embedjre-exe-artifact-suffix:  'Windows-x64-embedjre.exe'
-            embedjre-msi-artifact-suffix:  'Windows-x64-embedjre.msi'
-          - os-config: 3
+            msi-desktop-artifact-suffix:   'Windows-x64-bundlejvm.msi'
+            bundlejvm-exe-artifact-suffix: 'Windows-x64-bundlejvm.exe'
+            bundlejvm-msi-artifact-suffix: 'Windows-x64-bundlejvm.msi'
+
+          - os-config: 4 # Generates builds 8) 9) & 10)
             os: macos-latest
             fatjar-artifact-suffix:        'MacOS-x64.jar'
             gluon-desktop-arch-token:      'x86_64-darwin'
@@ -55,8 +60,8 @@ jobs:
             # The iOS build needs the Apple certificate in secrets (steps will be skipped otherwise)
             gluon-ios-arch-token:          'arm64-ios'
             gluon-ios-artifact-suffix:     'iOS-arm64-native.ipa'
-            embedjre-dmg-artifact-suffix:  'MacOS-x64-embedjre.dmg'
-            embedjre-pkg-artifact-suffix:  'MacOS-x64-embedjre.pkg'
+            bundlejvm-dmg-artifact-suffix:  'MacOS-x64-bundlejvm.dmg'
+            bundlejvm-pkg-artifact-suffix:  'MacOS-x64-bundlejvm.pkg'
 
     env:
       application-name: ${{ matrix.app.name }}
@@ -149,25 +154,25 @@ jobs:
         name: Copy fat jar with JavaFx to staging
         run: cp ${{ env.javafx-module }}/target/*-fat.jar staging/${{ env.application-name }}-${{ matrix.fatjar-artifact-suffix }}
 
-      - if: matrix.embedjre-deb-artifact-suffix != null
-        run: cp ${{ env.javafx-module }}/target/javapackager/*.deb staging/${{ env.application-name }}-${{ matrix.embedjre-deb-artifact-suffix }} | true
+      - if: matrix.bundlejvm-deb-artifact-suffix != null
+        run: cp ${{ env.javafx-module }}/target/javapackager/*.deb staging/${{ env.application-name }}-${{ matrix.bundlejvm-deb-artifact-suffix }} | true
 
-      - if: matrix.embedjre-rpm-artifact-suffix != null
-        run: cp ${{ env.javafx-module }}/target/javapackager/*.rpm staging/${{ env.application-name }}-${{ matrix.embedjre-rpm-artifact-suffix }} | true
+      - if: matrix.bundlejvm-rpm-artifact-suffix != null
+        run: cp ${{ env.javafx-module }}/target/javapackager/*.rpm staging/${{ env.application-name }}-${{ matrix.bundlejvm-rpm-artifact-suffix }} | true
 
-      - if: matrix.embedjre-exe-artifact-suffix != null
-        run: Copy-Item "${{ env.javafx-module }}/target/javapackager/*.exe" -Destination "staging/${{ env.application-name }}-${{ matrix.embedjre-exe-artifact-suffix }}"
+      - if: matrix.bundlejvm-exe-artifact-suffix != null
+        run: Copy-Item "${{ env.javafx-module }}/target/javapackager/*.exe" -Destination "staging/${{ env.application-name }}-${{ matrix.bundlejvm-exe-artifact-suffix }}"
 
-      - if: matrix.embedjre-msi-artifact-suffix != null
+      - if: matrix.bundlejvm-msi-artifact-suffix != null
         run: |
           dir ${{ env.javafx-module }}/target/javapackager/
-          Copy-Item "${{ env.javafx-module }}/target/javapackager/*.msi" -Destination "staging/${{ env.application-name }}-${{ matrix.embedjre-msi-artifact-suffix }}"
+          Copy-Item "${{ env.javafx-module }}/target/javapackager/*.msi" -Destination "staging/${{ env.application-name }}-${{ matrix.bundlejvm-msi-artifact-suffix }}"
 
-      - if: matrix.embedjre-dmg-artifact-suffix != null
-        run: cp ${{ env.javafx-module }}/target/javapackager/*.dmg staging/${{ env.application-name }}-${{ matrix.embedjre-dmg-artifact-suffix }} | true
+      - if: matrix.bundlejvm-dmg-artifact-suffix != null
+        run: cp ${{ env.javafx-module }}/target/javapackager/*.dmg staging/${{ env.application-name }}-${{ matrix.bundlejvm-dmg-artifact-suffix }} | true
 
-      - if: matrix.embedjre-pkg-artifact-suffix != null
-        run: cp ${{ env.javafx-module }}/target/javapackager/*.pkg staging/${{ env.application-name }}-${{ matrix.embedjre-pkg-artifact-suffix }} | true
+      - if: matrix.bundlejvm-pkg-artifact-suffix != null
+        run: cp ${{ env.javafx-module }}/target/javapackager/*.pkg staging/${{ env.application-name }}-${{ matrix.bundlejvm-pkg-artifact-suffix }} | true
 
       # Uploading it in the assets of this workflow run
       - if: matrix.fatjar-artifact-suffix != null
@@ -433,12 +438,6 @@ jobs:
           api-private-key: ${{ secrets.GLUON_IOS_APPSTORE_PRIVATE_KEY }}
 
 
-  upload:
-    needs: build
-    runs-on: ubuntu-latest
-    env:
-      API_GITHUB_TOKEN: ${{ secrets.API_GITHUB_TOKEN }}
-    steps:
       ##################################################################################################################
       #               Uploading all generated artifacts from staging into the SNAPSHOT release assets                  #
       ##################################################################################################################
@@ -454,22 +453,28 @@ jobs:
       # 10) App-iOS-arm64.ipa : iOS native app (Gluon)                                                                 #
       ##################################################################################################################
 
-      # The staging directory will be used to put all artifacts built in this job
-      - name: Make staging directory
-        run: mkdir staging
+  upload:
+    needs: build
+    runs-on: ubuntu-latest
+    env:
+      API_GITHUB_TOKEN: ${{ secrets.API_GITHUB_TOKEN }}
 
+    steps:
+
+      # The staging directory will be used to download all artifacts generated by the build job and to upload them in the SNAPSHOT release
+      - name: Make staging directory
+        run: mkdir /staging
+
+      # Downloading the artifacts generated by the build job in to the staging directory
       - if: env.API_GITHUB_TOKEN != ''
+        name: Download artifacts into staging directory
         uses: actions/download-artifact@v2
         with:
-          path: staging
+          path: /staging
 
-      ##################################################################################################################
-      #                                     Clearing SNAPSHOT release assets                                           #
-      ##################################################################################################################
-
-      # Doing it once (at the beginning of the first job). Assets will then be uploaded at the end of each job.
+      # Clearing SNAPSHOT release assets
       - if: env.API_GITHUB_TOKEN != ''
-        name: Delete old release assets
+        name: Delete old assets in SNAPSHOT release
         uses: mknejp/delete-release-assets@v1
         with:
           tag: SNAPSHOT
@@ -477,10 +482,11 @@ jobs:
           fail-if-no-assets: false
           token: ${{ secrets.API_GITHUB_TOKEN }}
 
+      # Upload new artifacts into the SNAPSHOT release assets
       - if: env.API_GITHUB_TOKEN != ''
         name: Upload artifacts to the SNAPSHOT release assets
         uses: AButler/upload-release-assets@v2.0
         with:
           release-tag: SNAPSHOT
-          files: staging/*
+          files: /staging/*
           repo-token: ${{ secrets.API_GITHUB_TOKEN }}
