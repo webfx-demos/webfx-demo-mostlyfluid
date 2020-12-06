@@ -110,20 +110,6 @@ jobs:
       - name: Make staging directory
         run: mkdir staging
 
-      ##################################################################################################################
-      #                                     Clearing SNAPSHOT release assets                                           #
-      ##################################################################################################################
-
-      # Doing it once (at the beginning of the first job). Assets will then be uploaded at the end of each job.
-      - if: matrix.os-config == 1 && env.API_GITHUB_TOKEN != ''
-        name: Delete old release assets
-        uses: mknejp/delete-release-assets@v1
-        with:
-          tag: SNAPSHOT
-          assets: '*'
-          fail-if-no-assets: false
-          token: ${{ secrets.API_GITHUB_TOKEN }}
-
 
       ##################################################################################################################
       #             Building WebFx + this repository (jars + javafx fat jar + Web build (GWT) if required)             #
@@ -447,6 +433,12 @@ jobs:
           api-private-key: ${{ secrets.GLUON_IOS_APPSTORE_PRIVATE_KEY }}
 
 
+  upload:
+    needs: build
+    runs-on: ubuntu-latest
+    env:
+      API_GITHUB_TOKEN: ${{ secrets.API_GITHUB_TOKEN }}
+    steps:
       ##################################################################################################################
       #               Uploading all generated artifacts from staging into the SNAPSHOT release assets                  #
       ##################################################################################################################
@@ -461,6 +453,29 @@ jobs:
       #  9) App-macOS-x64-executable : MacOS desktop native app (Gluon)                                                #
       # 10) App-iOS-arm64.ipa : iOS native app (Gluon)                                                                 #
       ##################################################################################################################
+
+      # The staging directory will be used to put all artifacts built in this job
+      - name: Make staging directory
+        run: mkdir staging
+
+      - if: env.API_GITHUB_TOKEN != ''
+        uses: actions/download-artifact@v2
+        with:
+          path: staging
+
+      ##################################################################################################################
+      #                                     Clearing SNAPSHOT release assets                                           #
+      ##################################################################################################################
+
+      # Doing it once (at the beginning of the first job). Assets will then be uploaded at the end of each job.
+      - if: env.API_GITHUB_TOKEN != ''
+        name: Delete old release assets
+        uses: mknejp/delete-release-assets@v1
+        with:
+          tag: SNAPSHOT
+          assets: '*'
+          fail-if-no-assets: false
+          token: ${{ secrets.API_GITHUB_TOKEN }}
 
       - if: env.API_GITHUB_TOKEN != ''
         name: Upload artifacts to the SNAPSHOT release assets
