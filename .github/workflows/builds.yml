@@ -36,7 +36,8 @@ jobs:
         include:
           - os-config: 1 # Generates builds 1) 2) 3) 4) & 5)
             os: ubuntu-latest
-            web-artifact-suffix:           'Web.war'                            # build 1) - Must run on Ubuntu because the Web branch push action runs only on Ubuntu
+            # Note: 1) must run on Ubuntu because the Github push action (to update the web-build branch) works only on Ubuntu
+            web-artifact-suffix:           'Web.war'                            # build 1)
             fatjar-artifact-suffix:        'Linux-x64-runnable.jar'             # build 2)
             jvm-deb-artifact-suffix:       'Linux-x64-jvm-package.deb'          # build 3)
             jvm-rpm-artifact-suffix:       'Linux-x64-jvm-package.rpm'          # build 4)
@@ -64,7 +65,7 @@ jobs:
             jvm-pkg-artifact-suffix:       'MacOS-x64-jvm.pkg'          # build 13)
             gluon-desktop-arch-token:      'x86_64-darwin'              # build 14)
             gluon-desktop-Artifact-suffix: 'MacOS-x64-native-runnable'  # build 14)
-            # The iOS build needs the Apple certificate in secrets (steps will be skipped otherwise)
+            # Note: the iOS build needs the Apple certificate in secrets (the steps will be skipped otherwise)
             gluon-ios-arch-token:          'arm64-ios'                  # build 15)
             gluon-ios-artifact-suffix:     'iOS-arm64-native.ipa'       # build 15)
 
@@ -75,7 +76,7 @@ jobs:
       gwt-module:       ./webfx-demo-${{ matrix.app.module-token }}-application-gwt
       gwt-build:        ./webfx-demo-${{ matrix.app.module-token }}-application-gwt/target/webfx-demo-${{ matrix.app.module-token }}-application-gwt-0.1.0-SNAPSHOT/webfx_demo_${{ matrix.app.module-token }}_application_gwt/
       gluon-module:     ./webfx-demo-${{ matrix.app.module-token }}-application-gluon
-      web-push-repository-name: webfx-demo-${{ matrix.app.module-token }} # This same repository
+      web-push-repository-name: webfx-demo-${{ matrix.app.module-token }} # This same repository (Github doesn't provide ${{ github.repository_name }}
       web-push-repository-owner: ${{ github.repository_owner }}
       web-push-branch: 'web-build'
       web-push-username: ${{ github.actor }}
