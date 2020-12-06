@@ -154,7 +154,7 @@ jobs:
           name: ${{ env.application-name }}-${{ matrix.fatjar-artifact-suffix }}
           path: ${{ env.javafx-module }}/target/*-fat.jar
 
-      - if: jvmbundle-deb-artifact-suffix != null
+      - if: matrix.jvmbundle-deb-artifact-suffix != null
         uses: actions/upload-artifact@v2
         with:
           name: ${{ env.application-name }}-${{ matrix.jvmbundle-deb-artifact-suffix }}
