@@ -459,7 +459,8 @@ jobs:
         with:
           path: staging
 
-      - run: ls -R staging
+      # Moving all files to staging root
+      - run: find staging -type f -exec mv -t staging {} +
 
       # Clearing SNAPSHOT release assets
       - if: env.API_GITHUB_TOKEN != ''
