@@ -4,22 +4,22 @@ name: Multi-OS builds
 ##################################################################################################################
 # Builds generated on Ubuntu:                                                                                    #
 #  1) App-Web.war : Web app (built with GWT)                                                                     #
-#  2) App-Linux-x64.jar : Java archive (fat jar with JavaFx for Linux)                                           #
-#  3) App-Linux-x64-jvm.deb                                                                                      #
-#  4) App-Linux-x64-jvm.rpm                                                                                      #
+#  2) App-Linux-x64-runnable.jar : Java archive (fat jar with JavaFx for Linux)                                  #
+#  3) App-Linux-x64-jvm-package.deb                                                                              #
+#  4) App-Linux-x64-jvm-package.rpm                                                                              #
 #  5) App-Linux-x64-native-runnable : Linux desktop native app (Gluon)                                           #
-#  6) App-Android-aarch64-native.apk : Android native app (Gluon)                                                #
+#  6) App-Android-aarch64-native-package.apk : Android native app (Gluon)                                        #
 # Builds generated on Windows:                                                                                   #
-#  7) App-Windows-x64.jar : Java archive (fat jar with JavaFx for Windows)                                       #
-#  8) App-Windows-x64-jvm.exe : Windows installer (exe)                                                          #
-#  9) App-Windows-x64-jvm.msi : Windows installer (msi)                                                          #
-# 10) App-Windows-x64-native.exe : Windows desktop native app (Gluon)                                            #
+#  7) App-Windows-x64-runnable.jar : Java archive (fat jar with JavaFx for Windows)                              #
+#  8) App-Windows-x64-jvm-installer.exe : Windows installer (exe)                                                #
+#  9) App-Windows-x64-jvm-installer.msi : Windows installer (msi)                                                #
+# 10) App-Windows-x64-native-runnable.exe : Windows desktop native app (Gluon)                                   #
 # Builds generated on MacOS:                                                                                     #
-# 11) App-MacOS-x64.jar : Java archive (fat jar with JavaFx for MacOS)                                           #
-# 12) App-MacOs-x64-jvm.dmg                                                                                      #
-# 13) App-MacOS-x64-jvm.pkg                                                                                      #
+# 11) App-MacOS-x64-runnable.jar : Java archive (fat jar with JavaFx for MacOS)                                  #
+# 12) App-MacOs-x64-jvm-package.dmg                                                                              #
+# 13) App-MacOS-x64-jvm-package.pkg                                                                              #
 # 14) App-macOS-x64-native-runnable : MacOS desktop native app (Gluon)                                           #
-# 15) App-iOS-arm64-native.ipa : iOS native app (Gluon)                                                          #
+# 15) App-iOS-arm64-native-package.ipa : iOS native app (Gluon)                                                  #
 ##################################################################################################################
 
 on:
@@ -36,26 +36,26 @@ jobs:
         include:
           - os-config: 1 # Generates builds 1) 2) 3) 4) & 5)
             os: ubuntu-latest
-            web-artifact-suffix:           'Web.war'                    # build 1) - Must run on Ubuntu because the Web branch push action runs only on Ubuntu
-            fatjar-artifact-suffix:        'Linux-x64.jar'              # build 2)
-            jvm-deb-artifact-suffix:       'Linux-x64-jvm.deb'          # build 3)
-            jvm-rpm-artifact-suffix:       'Linux-x64-jvm.rpm'          # build 4)
-            gluon-desktop-arch-token:      'x86_64-linux'               # build 5)
-            gluon-desktop-artifact-suffix: 'Linux-x64-native-runnable'  # build 5)
+            web-artifact-suffix:           'Web.war'                            # build 1) - Must run on Ubuntu because the Web branch push action runs only on Ubuntu
+            fatjar-artifact-suffix:        'Linux-x64-runnable.jar'             # build 2)
+            jvm-deb-artifact-suffix:       'Linux-x64-jvm-package.deb'          # build 3)
+            jvm-rpm-artifact-suffix:       'Linux-x64-jvm-package.rpm'          # build 4)
+            gluon-desktop-arch-token:      'x86_64-linux'                       # build 5)
+            gluon-desktop-artifact-suffix: 'Linux-x64-native-runnable'          # build 5)
 
           - os-config: 2 # Generates build 6) - Could be in os-config 1 but moved it a separate config to speed up (parallel run)
             os: ubuntu-latest
-            gluon-android-arch-token:      'aarch64-android'            # build 6)
-            gluon-android-artifact-suffix: 'Android-aarch64-native.apk' # build 6)
+            gluon-android-arch-token:      'aarch64-android'                    # build 6)
+            gluon-android-artifact-suffix: 'Android-aarch64-native-package.apk' # build 6)
 
           - os-config: 3 # Generates builds 7) 8) 9) & 10)
             os: windows-latest
-            fatjar-artifact-suffix:        'Windows-x64.jar'            # build 7)
-            jvm-exe-artifact-suffix:       'Windows-x64-jvm.exe'        # build 8)
-            jvm-msi-artifact-suffix:       'Windows-x64-jvm.msi'        # build 9)
-            gluon-desktop-arch-token:      'x86_64-windows'             # build 10)
-            gluon-desktop-artifact-suffix: 'Windows-x64-native.exe'     # build 10)
-            msi-desktop-artifact-suffix:   'Windows-x64-jvm.msi'        # build 9)
+            fatjar-artifact-suffix:        'Windows-x64-runnable.jar'           # build 7)
+            jvm-exe-artifact-suffix:       'Windows-x64-jvm-installer.exe'      # build 8)
+            jvm-msi-artifact-suffix:       'Windows-x64-jvm-installer.msi'      # build 9)
+            gluon-desktop-arch-token:      'x86_64-windows'                     # build 10)
+            gluon-desktop-artifact-suffix: 'Windows-x64-native-runnable.exe'    # build 10)
+            msi-desktop-artifact-suffix:   'Windows-x64-jvm-installer.msi'      # build 9)
 
           - os-config: 4 # Generates builds 11) 12) 13) 14) & 15)
             os: macos-latest
@@ -126,17 +126,17 @@ jobs:
       ##################################################################################################################
       # Builds generated on Ubuntu:                                                                                    #
       #  1) App-Web.war : Web app (built with GWT)                                                                     #
-      #  2) App-Linux-x64.jar : Java archive (fat jar with JavaFx for Linux)                                           #
-      #  3) App-Linux-x64-jvm.deb                                                                                      #
-      #  4) App-Linux-x64-jvm.rpm                                                                                      #
+      #  2) App-Linux-x64-runnable.jar : Java archive (fat jar with JavaFx for Linux)                                  #
+      #  3) App-Linux-x64-jvm-package.deb                                                                              #
+      #  4) App-Linux-x64-jvm-package.rpm                                                                              #
       # Builds generated on Windows:                                                                                   #
-      #  7) App-Windows-x64.jar : Java archive (fat jar with JavaFx for Windows)                                       #
-      #  8) App-Windows-x64-jvm.exe : Windows installer (exe)                                                          #
-      #  9) App-Windows-x64-jvm.msi : Windows installer (msi)                                                          #
+      #  7) App-Windows-x64-runnable.jar : Java archive (fat jar with JavaFx for Windows)                              #
+      #  8) App-Windows-x64-jvm-installer.exe : Windows installer (exe)                                                #
+      #  9) App-Windows-x64-jvm-installer.msi : Windows installer (msi)                                                #
       # Builds generated on MacOS:                                                                                     #
-      # 11) App-MacOS-x64.jar : Java archive (fat jar with JavaFx for MacOS)                                           #
-      # 12) App-MacOs-x64-jvm.dmg                                                                                      #
-      # 13) App-MacOS-x64-jvm.pkg                                                                                      #
+      # 11) App-MacOS-x64-runnable.jar : Java archive (fat jar with JavaFx for MacOS)                                  #
+      # 12) App-MacOs-x64-jvm-package.dmg                                                                              #
+      # 13) App-MacOS-x64-jvm-package.pkg                                                                              #
       ##################################################################################################################
 
       # Building the latest WebFx version locally (since there is no public release yet)
@@ -178,17 +178,17 @@ jobs:
       ##################################################################################################################
       # On Ubuntu:                                                                                    #
       #  1) App-Web.war : Web app (built with GWT)                                                                     #
-      #  2) App-Linux-x64.jar : Java archive (fat jar with JavaFx for Linux)                                           #
-      #  3) App-Linux-x64-jvm.deb                                                                                      #
-      #  4) App-Linux-x64-jvm.rpm                                                                                      #
+      #  2) App-Linux-x64-runnable.jar : Java archive (fat jar with JavaFx for Linux)                                  #
+      #  3) App-Linux-x64-jvm-package.deb                                                                              #
+      #  4) App-Linux-x64-jvm-package.rpm                                                                              #
       # On Windows:                                                                                   #
-      #  7) App-Windows-x64.jar : Java archive (fat jar with JavaFx for Windows)                                       #
-      #  8) App-Windows-x64-jvm.exe : Windows installer (exe)                                                          #
-      #  9) App-Windows-x64-jvm.msi : Windows installer (msi)                                                          #
+      #  7) App-Windows-x64-runnable.jar : Java archive (fat jar with JavaFx for Windows)                              #
+      #  8) App-Windows-x64-jvm-installer.exe : Windows installer (exe)                                                #
+      #  9) App-Windows-x64-jvm-installer.msi : Windows installer (msi)                                                #
       # On MacOS:                                                                                     #
-      # 11) App-MacOS-x64.jar : Java archive (fat jar with JavaFx for MacOS)                                           #
-      # 12) App-MacOs-x64-jvm.dmg                                                                                      #
-      # 13) App-MacOS-x64-jvm.pkg                                                                                      #
+      # 11) App-MacOS-x64-runnable.jar : Java archive (fat jar with JavaFx for MacOS)                                  #
+      # 12) App-MacOs-x64-jvm-package.dmg                                                                              #
+      # 13) App-MacOS-x64-jvm-package.pkg                                                                              #
       ##################################################################################################################
 
       # Staging 1)
@@ -231,7 +231,7 @@ jobs:
       ##################################################################################################################
       #                             Building and staging the Windows installer (msi)                                   #
       ##################################################################################################################
-      #  9) App-Windows-x64-jvm.msi : Windows installer (msi)                                                          #
+      #  9) App-Windows-x64-jvm-installer.msi : Windows installer (msi)                                                #
       ##################################################################################################################
 
       # Creating the runtime with jlink and msi with jpackage
@@ -253,7 +253,7 @@ jobs:
       #                           Building the native desktop apps using Gluon/GraalVM                                 #
       ##################################################################################################################
       #  5) App-Linux-x64-native-runnable : Linux desktop native app (Gluon)                                           #
-      # 10) App-Windows-x64-native.exe : Windows desktop native app (Gluon)                                            #
+      # 10) App-Windows-x64-native-runnable.exe : Windows desktop native app (Gluon)                                   #
       # 14) App-macOS-x64-native-runnable : MacOS desktop native app (Gluon)                                           #
       ##################################################################################################################
 
@@ -305,7 +305,7 @@ jobs:
       #                                    Staging the native desktop apps                                             #
       ##################################################################################################################
       #  5) App-Linux-x64-native-runnable : Linux desktop native app (Gluon)                                           #
-      # 10) App-Windows-x64-native.exe : Windows desktop native app (Gluon)                                            #
+      # 10) App-Windows-x64-native-runnable.exe : Windows desktop native app (Gluon)                                   #
       # 14) App-macOS-x64-native-runnable : MacOS desktop native app (Gluon)                                           #
       ##################################################################################################################
 
@@ -323,7 +323,7 @@ jobs:
       ##################################################################################################################
       #                      Building and staging the native Android app using Gluon/GraalVM                           #
       ##################################################################################################################
-      #  6) App-Android-aarch64-native.apk : Android native app (Gluon)                                                #
+      #  6) App-Android-aarch64-native-package.apk : Android native app (Gluon)                                        #
       ##################################################################################################################
 
       # All prerequisite have already be done when building the Desktop qpps
@@ -345,7 +345,7 @@ jobs:
       ##################################################################################################################
       #                        Building and staging the native iOS app using Gluon/GraalVM                             #
       ##################################################################################################################
-      # 10) App-iOS-arm64.ipa : iOS native app (Gluon)                                                                 #
+      # 10) App-iOS-arm64-native-package.ipa : iOS native app (Gluon)                                                  #
       ##################################################################################################################
 
       # Importing the Apple codesign certificates
@@ -396,25 +396,25 @@ jobs:
       ##################################################################################################################
       #                            Uploading staging artifacts into this workflow assets                               #
       ##################################################################################################################
-      # Build-1-assets:                                                                                             #
+      # Build-1-assets:                                                                                                #
       #  1) App-Web.war : Web app (built with GWT)                                                                     #
-      #  2) App-Linux-x64.jar : Java archive (fat jar with JavaFx for Linux)                                           #
-      #  3) App-Linux-x64-jvm.deb                                                                                      #
-      #  4) App-Linux-x64-jvm.rpm                                                                                      #
+      #  2) App-Linux-x64-runnable.jar : Java archive (fat jar with JavaFx for Linux)                                  #
+      #  3) App-Linux-x64-jvm-package.deb                                                                              #
+      #  4) App-Linux-x64-jvm-package.rpm                                                                              #
       #  5) App-Linux-x64-native-runnable : Linux desktop native app (Gluon)                                           #
-      # Build-2-assets:                                                                                             #
-      #  6) App-Android-aarch64-native.apk : Android native app (Gluon)                                                #
-      # Build-3-assets:                                                                                             #
-      #  7) App-Windows-x64.jar : Java archive (fat jar with JavaFx for Windows)                                       #
-      #  8) App-Windows-x64-jvm.exe : Windows installer (exe)                                                          #
-      #  9) App-Windows-x64-jvm.msi : Windows installer (msi)                                                          #
-      # 10) App-Windows-x64-native.exe : Windows desktop native app (Gluon)                                            #
-      # Build-4-assets:                                                                                             #
-      # 11) App-MacOS-x64.jar : Java archive (fat jar with JavaFx for MacOS)                                           #
-      # 12) App-MacOs-x64-jvm.dmg                                                                                      #
-      # 13) App-MacOS-x64-jvm.pkg                                                                                      #
+      # Build-2-assets:                                                                                                #
+      #  6) App-Android-aarch64-native-package.apk : Android native app (Gluon)                                        #
+      # Build-3-assets:                                                                                                #
+      #  7) App-Windows-x64-runnable.jar : Java archive (fat jar with JavaFx for Windows)                              #
+      #  8) App-Windows-x64-jvm-installer.exe : Windows installer (exe)                                                #
+      #  9) App-Windows-x64-jvm-installer.msi : Windows installer (msi)                                                #
+      # 10) App-Windows-x64-native-runnable.exe : Windows desktop native app (Gluon)                                   #
+      # Build-4-assets:                                                                                                #
+      # 11) App-MacOS-x64-runnable.jar : Java archive (fat jar with JavaFx for MacOS)                                  #
+      # 12) App-MacOs-x64-jvm-package.dmg                                                                              #
+      # 13) App-MacOS-x64-jvm-package.pkg                                                                              #
       # 14) App-macOS-x64-native-runnable : MacOS desktop native app (Gluon)                                           #
-      # 15) App-iOS-arm64-native.ipa : iOS native app (Gluon)                                                          #
+      # 15) App-iOS-arm64-native-package.ipa : iOS native app (Gluon)                                                  #
       ##################################################################################################################
 
       # Uploading all artifacts in the assets of this workflow run
