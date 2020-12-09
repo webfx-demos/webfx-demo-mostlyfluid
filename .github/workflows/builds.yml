@@ -32,6 +32,7 @@ jobs:
     strategy:
       matrix:
         app: [{name: 'ResponsiveDesign', module-token: 'webfx-demo-responsivedesign', gwt-token: 'webfx_demo_responsivedesign', ios-bundle-id: 'org.webfx.demo.responsivedesign'}]
+        dep-build-repos: [ {repo1: 'webfx-project/webfx'} ] # Must be 1 single object {repo1, ... reposN} and keep N sync with manual iteration in 'Checkout & build dependent repos' section
         os-config:  [1, 2, 3, 4]
         include:
           - os-config: 1 # Generates builds 1) 2) 3) 4) & 5)
@@ -72,7 +73,6 @@ jobs:
     env:
       app-name:  ${{ matrix.app.name }}
       app-version: '0.1.0-SNAPSHOT'
-      dep-build-repos: ['webfx-project/webfx'] # Keep sync with manual iteration in 'Checkout & build dependent repos' section
       app-dir:                   .
       app-javafx-module-dir:     ./${{ matrix.app.module-token }}-application-javafx
       app-gwt-module-dir:        ./${{ matrix.app.module-token }}-application-gwt
@@ -123,14 +123,14 @@ jobs:
       #                                     Checkout & build dependent repos                                           #
       ##################################################################################################################
 
-      # Repository 0
+      # Repository 1
       - uses: actions/checkout@v2
         with:
-          repository: $${ env.dep-build-repos[0] }}
-          path: ${{ env.dep-build-repos[0] }}
+          repository: $${ matrix.dep-build-repos.repo1 }}
+          path: ${{ matrix.dep-build-repos.repo1 }}
 
       - run: mvn -P '!gwt-compile' install
-        working-directory: ${{ env.dep-build-repos[0] }}
+        working-directory: ${{ matrix.dep-build-repos.repo1 }}
 
 
       ##################################################################################################################
