@@ -107,15 +107,15 @@ jobs:
         with:
           java-version: ${{ env.jdk-version }}
 
-      # The staging directory will be used to store all artifacts built in this job for upload
-      - name: Make staging directory
-        run: mkdir staging
-
       # Checkout this repository
       - name: Checkout this repository
         uses: actions/checkout@v2
         with:
           path: ${{ env.app-dir }}
+
+      # The staging directory will be used to store all artifacts built in this job for upload
+      - name: Make staging directory
+        run: mkdir staging
 
 
       ##################################################################################################################
