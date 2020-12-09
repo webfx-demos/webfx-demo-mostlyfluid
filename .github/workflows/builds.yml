@@ -125,7 +125,7 @@ jobs:
       # Repository 1
       - uses: actions/checkout@v2
         with:
-          repository: $${ matrix.dep-build-repos.repo1 }}
+          repository: ${{ matrix.dep-build-repos.repo1 }}
           path: ${{ matrix.dep-build-repos.repo1 }}
 
       - run: mvn -P '!gwt-compile' install
