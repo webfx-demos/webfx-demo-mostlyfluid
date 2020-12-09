@@ -31,7 +31,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        app: [{name: 'ResponsiveDesign', module-token: 'webfx-demo-responsivedesign', gwt-token: 'webfx_demo_responsivedesign', ios-bundle-id: 'org.webfx.demo.responsivedesign'}]
+        app: [{name: 'ResponsiveDesign', module-token: 'webfx-demo-responsivedesign', gwt-token: 'webfx_demo_responsivedesign', ios-bundle-id: 'org.webfx.demo.responsivedesign', version: '0.1.0-SNAPSHOT'}]
         dep-build-repos: [ {repo1: 'webfx-project/webfx'} ] # Must be 1 single object {repo1, ... reposN} and keep N sync with manual iteration in 'Checkout & build dependent repos' section
         os-config:  [1, 2, 3, 4]
         include:
@@ -72,11 +72,10 @@ jobs:
 
     env:
       app-name:  ${{ matrix.app.name }}
-      app-version: '0.1.0-SNAPSHOT'
       app-dir:                   .
       app-javafx-module-dir:     ./${{ matrix.app.module-token }}-application-javafx
       app-gwt-module-dir:        ./${{ matrix.app.module-token }}-application-gwt
-      app-gwt-build-dir:         ./${{ matrix.app.module-token }}-application-gwt/target/${{ matrix.app.module-token }}-application-gwt-${{ env.app-version }}/${{ matrix.app.gwt-token }}_application_gwt
+      app-gwt-build-dir:         ./${{ matrix.app.module-token }}-application-gwt/target/${{ matrix.app.module-token }}-application-gwt-${{ matrix.app.version }}/${{ matrix.app.gwt-token }}_application_gwt
       app-gluon-module-dir:      ./${{ matrix.app.module-token }}-application-gluon
       web-push-repository-name:  ${{ matrix.app.module-token }} # This same repository (Github doesn't provide ${{ github.repository_name }}
       web-push-repository-owner: ${{ github.repository_owner }}
@@ -249,7 +248,7 @@ jobs:
         name: Create Windows Installer (msi)
         run: |
           mvn javafx:jlink
-          ${{ env.JAVA_HOME }}\bin\jpackage --input .\target\ --name ${{ env.app-name }} --main-jar ${{ matrix.app.module-token }}-application-javafx-${{ env.app-version }}.jar --main-class webfx.platform.shared.services.appcontainer.ApplicationContainer --type msi --runtime-image .\target\jlinkImage --app-version 0.0.0 --win-per-user-install --win-menu --win-menu-group WebFx
+          ${{ env.JAVA_HOME }}\bin\jpackage --input .\target\ --name ${{ env.app-name }} --main-jar ${{ matrix.app.module-token }}-application-javafx-${{ matrix.app.version }}.jar --main-class webfx.platform.shared.services.appcontainer.ApplicationContainer --type msi --runtime-image .\target\jlinkImage --app-version 0.0.0 --win-per-user-install --win-menu --win-menu-group WebFx
         working-directory: ${{ env.app-javafx-module-dir }}
 
       # Staging 9)
