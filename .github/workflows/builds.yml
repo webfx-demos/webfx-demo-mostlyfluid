@@ -72,6 +72,7 @@ jobs:
 
     env:
       # Note: if the number of dependent repositories change, the section 'Checkout & build dependent repositories' must be updated
+      # These build dependencies are because their artifacts are not yet published to the Maven Central Repository, so they need to be built with mvn install (published in the local repository of the machine)
       dep-repo-1: 'webfx-project/webfx-parent'
       dep-repo-2: 'webfx-project/webfx-lib-javacupruntime'
       dep-repo-3: 'webfx-project/webfx'
