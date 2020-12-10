@@ -1,4 +1,3 @@
-name: Multi-OS builds
 ##################################################################################################################
 #         This Github workflow will generate the following builds on each push made on the main branch:          #
 ##################################################################################################################
@@ -21,6 +20,8 @@ name: Multi-OS builds
 # 14) App-macOS-x64-native-runnable : MacOS desktop native app (Gluon)                                           #
 # 15) App-iOS-arm64-native-package.ipa : iOS native app (Gluon)                                                  #
 ##################################################################################################################
+
+name: Multi-OS builds
 
 on:
   push:
@@ -70,8 +71,10 @@ jobs:
             gluon-ios-artifact-suffix:     'iOS-arm64-native.ipa'               # build 15)
 
     env:
-      # Note: if the number of dependent repositories change, 
-      repo-dep1: 'webfx-project/webfx'
+      # Note: if the number of dependent repositories change, the section 'Checkout & build dependent repositories' must be updated
+      dep-repo-1: 'webfx-project/webfx-parent'
+      dep-repo-2: 'webfx-project/webfx-lib-javacupruntime'
+      dep-repo-3: 'webfx-project/webfx'
       app-name:  ${{ matrix.app.name }}
       app-repo-dir:              .
       app-parent-module-dir:     .
@@ -124,15 +127,37 @@ jobs:
       ##################################################################################################################
 
       # Dependent Repository 1
-      - name: Checkout dependent repository
+      - name: Checkout dependent repository 1
         uses: actions/checkout@v2
         with:
-          repository: ${{ env.repo-dep1 }}
-          path: 'repo-dep1'
+          repository: ${{ env.dep-repo-1 }}
+          path: 'dep-repo-1'
 
-      - name: Build dependent repository
-        run: mvn -P '!gwt-compile' install
-        working-directory: 'repo-dep1'
+      - name: Build dependent repository 1
+        run: mvn -P '!gwt-compile,!javafx-fatjar,!javapackager' install
+        working-directory: 'dep-repo-1'
+
+      # Dependent Repository 2
+      - name: Checkout dependent repository 2
+        uses: actions/checkout@v2
+        with:
+          repository: ${{ env.dep-repo-2 }}
+          path: 'dep-repo-2'
+
+      - name: Build dependent repository 2
+        run: mvn -P '!gwt-compile,!javafx-fatjar,!javapackager' install
+        working-directory: 'dep-repo-2'
+
+      # Dependent Repository 3
+      - name: Checkout dependent repository 3
+        uses: actions/checkout@v2
+        with:
+          repository: ${{ env.dep-repo-2 }}
+          path: 'dep-repo-3'
+
+      - name: Build dependent repository 3
+        run: mvn -P '!gwt-compile,!javafx-fatjar,!javapackager' install
+        working-directory: 'dep-repo-3'
 
 
       ##################################################################################################################
