@@ -134,7 +134,7 @@ jobs:
           path: 'dep-repo-1'
 
       - name: Build dependent repository 1
-        run: mvn -P '!gwt-compile,!javafx-fatjar,!javapackager' install
+        run: mvn -B -P '!gwt-compile,!javafx-fatjar,!javapackager' install
         working-directory: 'dep-repo-1'
 
       # Dependent Repository 2
@@ -145,18 +145,18 @@ jobs:
           path: 'dep-repo-2'
 
       - name: Build dependent repository 2
-        run: mvn -P '!gwt-compile,!javafx-fatjar,!javapackager' install
+        run: mvn -B -P '!gwt-compile,!javafx-fatjar,!javapackager' install
         working-directory: 'dep-repo-2'
 
       # Dependent Repository 3
       - name: Checkout dependent repository 3
         uses: actions/checkout@v2
         with:
-          repository: ${{ env.dep-repo-2 }}
+          repository: ${{ env.dep-repo-3 }}
           path: 'dep-repo-3'
 
       - name: Build dependent repository 3
-        run: mvn -P '!gwt-compile,!javafx-fatjar,!javapackager' install
+        run: mvn -B -P '!gwt-compile,!javafx-fatjar,!javapackager' install
         working-directory: 'dep-repo-3'
 
 
@@ -180,19 +180,19 @@ jobs:
 
       # Building this repository with JDK 13+ (Java 11 target)
       - name: Build this repository (no JavaFx fat jar - no GWT build)
-        run: mvn -P '!gwt-compile,!javafx-fatjar,!javapackager' install
+        run: mvn -B -P '!gwt-compile,!javafx-fatjar,!javapackager' install
         working-directory: ${{ env.app-repo-dir }}
 
       # Building this repository with JDK 13+ (Java 11 target) including a GWT compilation (if required)
       - if: matrix.web-artifact-suffix != null
         name: Build this application (JavaFx fat jar + GWT build)
-        run: mvn -P 'gwt-compile,javafx-fatjar,javapackager' package
+        run: mvn -B -P 'gwt-compile,javafx-fatjar,javapackager' package
         working-directory: ${{ env.app-parent-module-dir }}
 
       # Or building this repository with JDK 13+ (Java 11 target) excluding a GWT compilation
       - if: matrix.web-artifact-suffix == null
         name: Build this application (JavaFx fat jar - no GWT build)
-        run: mvn -P '!gwt-compile,javafx-fatjar,javapackager' package
+        run: mvn -B -P '!gwt-compile,javafx-fatjar,javapackager' package
         working-directory: ${{ env.app-parent-module-dir }}
 
 
@@ -280,7 +280,7 @@ jobs:
       - if: matrix.msi-desktop-artifact-suffix != null
         name: Create Windows Installer (msi)
         run: |
-          mvn javafx:jlink
+          mvn -B javafx:jlink
           ${{ env.JAVA_HOME }}\bin\jpackage --input .\target\ --name ${{ env.app-name }} --main-jar ${{ matrix.app.module-token }}-application-javafx-${{ matrix.app.version }}.jar --main-class webfx.platform.shared.services.appcontainer.ApplicationContainer --type msi --runtime-image .\target\jlinkImage --app-version 0.0.0 --win-per-user-install --win-menu --win-menu-group WebFx
         working-directory: ${{ env.app-javafx-module-dir }}
 
@@ -336,7 +336,7 @@ jobs:
       # Invoking the Gluon Client Maven plugin to build the native Desktop app (chaining build & package goals)
       - if: matrix.gluon-desktop-artifact-suffix != null
         name: Gluon Build for Desktop
-        run: mvn -P 'gluon-desktop' client:build client:package # May take a while
+        run: mvn -B -P 'gluon-desktop' client:build client:package # May take a while
         env:
           GRAALVM_HOME: ${{ env.JAVA_HOME }}
         working-directory: ${{ env.app-gluon-module-dir }}
@@ -372,7 +372,7 @@ jobs:
       # Invoking the Gluon Client Maven plugin to build the native Android app (chaining build & package goals)
       - if: matrix.gluon-android-arch-token != null
         name: Gluon Build for Android
-        run: mvn -P 'gluon-android' clean client:build client:package # May take a while
+        run: mvn -B -P 'gluon-android' clean client:build client:package # May take a while
         env:
           GRAALVM_HOME: ${{ env.JAVA_HOME }}
         working-directory: ${{ env.app-gluon-module-dir }}
@@ -408,7 +408,7 @@ jobs:
       # Invoking the Gluon Client Maven plugin to build the native iOS app (chaining build & package goals)
       - if: matrix.gluon-ios-arch-token != null && env.GLUON_IOS_CERTIFICATES_FILE_BASE64 != ''
         name: Gluon Build for iOS
-        run: mvn -P 'gluon-ios' clean client:build client:package # May take a while
+        run: mvn -B -P 'gluon-ios' clean client:build client:package # May take a while
         env:
           GRAALVM_HOME: ${{ env.JAVA_HOME }}
         working-directory: ${{ env.app-gluon-module-dir }}
