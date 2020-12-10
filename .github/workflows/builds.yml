@@ -31,8 +31,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        app: [{name: 'ResponsiveDesign', module-token: 'webfx-demo-responsivedesign', gwt-token: 'webfx_demo_responsivedesign', ios-bundle-id: 'org.webfx.demo.responsivedesign', version: '0.1.0-SNAPSHOT'}]
-        dep-build-repos: [ {repo1: 'webfx-project/webfx'} ] # Must be 1 single object {repo1, ... reposN} and keep N sync with manual iteration in 'Checkout & build dependent repos' section
+        app: [{name: 'ResponsiveDesign', module-token: 'webfx-demo-responsivedesign', gwt-token: 'webfx_demo_responsivedesign', web-push-branch: 'web-build', ios-bundle-id: 'org.webfx.demo.responsivedesign', version: '0.1.0-SNAPSHOT'}]
         os-config:  [1, 2, 3, 4]
         include:
           - os-config: 1 # Generates builds 1) 2) 3) 4) & 5)
@@ -71,15 +70,17 @@ jobs:
             gluon-ios-artifact-suffix:     'iOS-arm64-native.ipa'               # build 15)
 
     env:
+      # Note: if the number of dependent repositories change, 
+      repo-dep1: 'webfx-project/webfx'
       app-name:  ${{ matrix.app.name }}
-      app-dir:                   .
+      app-repo-dir:              .
+      app-parent-module-dir:     .
       app-javafx-module-dir:     ./${{ matrix.app.module-token }}-application-javafx
       app-gwt-module-dir:        ./${{ matrix.app.module-token }}-application-gwt
       app-gwt-build-dir:         ./${{ matrix.app.module-token }}-application-gwt/target/${{ matrix.app.module-token }}-application-gwt-${{ matrix.app.version }}/${{ matrix.app.gwt-token }}_application_gwt
       app-gluon-module-dir:      ./${{ matrix.app.module-token }}-application-gluon
       web-push-repository-name:  ${{ matrix.app.module-token }} # This same repository (Github doesn't provide ${{ github.repository_name }}
       web-push-repository-owner: ${{ github.repository_owner }}
-      web-push-branch: 'web-build'
       web-push-username: ${{ github.actor }}
       web-push-email: ${{ secrets.API_GITHUB_EMAIL }}
       jdk-version: '15.0.1'
@@ -111,7 +112,7 @@ jobs:
       - name: Checkout this repository
         uses: actions/checkout@v2
         with:
-          path: ${{ env.app-dir }}
+          path: ${{ env.app-repo-dir }}
 
       # The staging directory will be used to store all artifacts built in this job for upload
       - name: Make staging directory
@@ -119,17 +120,19 @@ jobs:
 
 
       ##################################################################################################################
-      #                                     Checkout & build dependent repos                                           #
+      #                                 Checkout & build dependent repositories                                        #
       ##################################################################################################################
 
-      # Repository 1
-      - uses: actions/checkout@v2
+      # Dependent Repository 1
+      - name: Checkout dependent repository
+        uses: actions/checkout@v2
         with:
-          repository: ${{ matrix.dep-build-repos.repo1 }}
-          path: ${{ matrix.dep-build-repos.repo1 }}
+          repository: ${{ env.repo-dep1 }}
+          path: 'repo-dep1'
 
-      - run: mvn -P '!gwt-compile' install
-        working-directory: ${{ matrix.dep-build-repos.repo1 }}
+      - name: Build dependent repository
+        run: mvn -P '!gwt-compile' install
+        working-directory: 'repo-dep1'
 
 
       ##################################################################################################################
@@ -150,17 +153,22 @@ jobs:
       # 13) App-MacOS-x64-jvm-package.pkg                                                                              #
       ##################################################################################################################
 
+      # Building this repository with JDK 13+ (Java 11 target)
+      - name: Build this repository (no JavaFx fat jar - no GWT build)
+        run: mvn -P '!gwt-compile,!javafx-fatjar,!javapackager' install
+        working-directory: ${{ env.app-repo-dir }}
+
       # Building this repository with JDK 13+ (Java 11 target) including a GWT compilation (if required)
       - if: matrix.web-artifact-suffix != null
-        name: Build this repository (JavaFx fat jar + GWT build)
-        run: mvn -P 'gwt-compile,javafx-fatjar,javapackager' install
-        working-directory: ${{ env.app-dir }}
+        name: Build this application (JavaFx fat jar + GWT build)
+        run: mvn -P 'gwt-compile,javafx-fatjar,javapackager' package
+        working-directory: ${{ env.app-parent-module-dir }}
 
       # Or building this repository with JDK 13+ (Java 11 target) excluding a GWT compilation
       - if: matrix.web-artifact-suffix == null
-        name: Build this repository (JavaFx fat jar - no GWT build)
-        run: mvn -P '!gwt-compile,javafx-fatjar,javapackager' install
-        working-directory: ${{ env.app-dir }}
+        name: Build this application (JavaFx fat jar - no GWT build)
+        run: mvn -P '!gwt-compile,javafx-fatjar,javapackager' package
+        working-directory: ${{ env.app-parent-module-dir }}
 
 
       ##################################################################################################################
@@ -168,7 +176,7 @@ jobs:
       ##################################################################################################################
 
       - if: matrix.web-artifact-suffix != null && env.API_GITHUB_TOKEN != ''
-        name: Push GWT build to ${{ env.web-push-branch }} branch
+        name: Push GWT build to ${{ matrix.app.web-push-branch }} branch
         uses: cpina/github-action-push-to-another-repository@master
         env:
           API_TOKEN_GITHUB: ${{ secrets.API_GITHUB_TOKEN }}
@@ -176,7 +184,7 @@ jobs:
           source-directory: ${{ env.app-gwt-build-dir }}
           destination-repository-username: ${{ env.web-push-repository-owner }}
           destination-repository-name: ${{ env.web-push-repository-name }}
-          target-branch: ${{ env.web-push-branch }}
+          target-branch: ${{ matrix.app.web-push-branch }}
           destination-github-username: ${{ env.web-push-username }}
           user-email: ${{ env.web-push-email }}
 
