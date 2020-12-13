@@ -7,9 +7,9 @@ module webfx.demo.responsivedesign.application {
     requires javafx.graphics;
 
     // Exported packages
-    exports webfx.demo.responsivedesign;
+    exports dev.webfx.demo.responsivedesign;
 
     // Provided services
-    provides javafx.application.Application with webfx.demo.responsivedesign.ResponsiveDesignApplication;
+    provides javafx.application.Application with dev.webfx.demo.responsivedesign.ResponsiveDesignApplication;
 
 }

@@ -1,4 +1,4 @@
-package webfx.demo.responsivedesign;
+package dev.webfx.demo.responsivedesign;
 
 import javafx.application.Application;
 import javafx.geometry.HPos;
