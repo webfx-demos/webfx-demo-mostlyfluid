@@ -1,0 +1,40 @@
+name: Deploy SNAPSHOTs on sonatype
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    env:
+      # WebFx requires at least JDK 13 due to javac bugs in prior versions (otherwise JDK 11+ should be enough in theory)
+      jdk-version: '15.0.1'
+
+    steps:
+
+      # Set up the JDK
+      - name: Set up JDK ${{ env.jdk-version }}
+        uses: actions/setup-java@v1
+        with:
+          java-version: ${{ env.jdk-version }}
+
+      # Set up settings.xml for the deployment in sonatype repository
+      - name: Set up settings.xml
+        uses: s4u/maven-settings-action@v2.2.0
+        with:
+          servers: |
+            [{
+                "id": "sonatype-deploy",
+                "username": "${{ secrets.SONATYPE_USERNAME }}",
+                "password": "${{ secrets.SONATYPE_PASSWORD }}"
+            }]
+
+      # Checkout this repository
+      - name: Checkout this repository
+        uses: actions/checkout@v2
+
+      # Build all modules and deploy their SNAPSHOT artifacts in sonatype repository
+      - name: Deploy this repository
+        run: mvn -B -P '!gwt-compile,!javafx-fatjar,!javapackager' deploy
