@@ -1,11 +1,11 @@
-name: Deploy SNAPSHOTs on sonatype
+name: Deploy to Sonatype repository
 
 on:
   push:
     branches: [ main ]
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
 
     env:
@@ -14,22 +14,14 @@ jobs:
 
     steps:
 
-      # Set up the JDK
+      # Set up the JDK and Maven settings.xml
       - name: Set up JDK ${{ env.jdk-version }}
         uses: actions/setup-java@v1
         with:
           java-version: ${{ env.jdk-version }}
-
-      # Set up settings.xml for the deployment in sonatype repository
-      - name: Set up settings.xml
-        uses: s4u/maven-settings-action@v2.2.0
-        with:
-          servers: |
-            [{
-                "id": "sonatype-deploy",
-                "username": "${{ secrets.SONATYPE_USERNAME }}",
-                "password": "${{ secrets.SONATYPE_PASSWORD }}"
-            }]
+          server-id: sonatype-deploy
+          server-username: ${{ secrets.SONATYPE_USERNAME }}
+          server-password: ${{ secrets.SONATYPE_PASSWORD }}
 
       # Checkout this repository
       - name: Checkout this repository
