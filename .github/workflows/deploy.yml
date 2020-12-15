@@ -27,7 +27,7 @@ jobs:
       - name: Checkout this repository
         uses: actions/checkout@v2
 
-      # Build all modules and deploy their SNAPSHOT artifacts in sonatype repository
+      # Build all modules and deploy their SNAPSHOT artifacts to sonatype repository
       - name: Deploy this repository
         run: mvn -B -P '!gwt-compile,!javafx-fatjar,!javapackager' deploy
         env:
