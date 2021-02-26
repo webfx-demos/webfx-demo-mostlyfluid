@@ -20,7 +20,7 @@ public class ResponsiveDesignApplication extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        SplitPane horizontalScrollPane = new SplitPane(createFluidPane(), createArea(Color.RED));
+        SplitPane horizontalScrollPane = new SplitPane(createFluidPane(), createArea(Color.YELLOW));
         //SplitPane verticalSplitPane    = new SplitPane(horizontalScrollPane, new TallyCounterApplication().createTallyCounterPane());
         //verticalSplitPane.setOrientation(Orientation.VERTICAL);
         primaryStage.setScene(new Scene(horizontalScrollPane, 850, 450));
