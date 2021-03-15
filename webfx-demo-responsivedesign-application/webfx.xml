@@ -5,4 +5,8 @@
         <provider spi="javafx.application.Application">dev.webfx.demo.responsivedesign.ResponsiveDesignApplication</provider>
     </providers>
 
+    <dependencies>
+        <source-modules/>
+    </dependencies>
+
 </module>
