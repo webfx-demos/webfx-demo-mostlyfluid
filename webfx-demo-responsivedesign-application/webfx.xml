@@ -2,7 +2,7 @@
 <project>
 
     <providers>
-        <provider spi="javafx.application.Application">dev.webfx.demo.responsivedesign.ResponsiveDesignApplication</provider>
+        <javafx.application.Application>dev.webfx.demo.responsivedesign.ResponsiveDesignApplication</javafx.application.Application>
     </providers>
 
     <dependencies>
