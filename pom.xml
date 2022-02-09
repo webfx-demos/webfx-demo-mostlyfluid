@@ -16,7 +16,7 @@
 
     <repositories>
 
-        <!-- For WebFx snapshots download (including webfx-parent) -->
+        <!-- For WebFX snapshots download (including webfx-parent) -->
         <repository>
             <id>webfx-snapshots</id>
             <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
@@ -28,7 +28,7 @@
 
     <modules>
         <module>webfx-demo-responsivedesign-application</module>
-        <module>webfx-demo-responsivedesign-application-javafx</module>
+        <module>webfx-demo-responsivedesign-application-openjfx</module>
         <module>webfx-demo-responsivedesign-application-gwt</module>
         <module>webfx-demo-responsivedesign-application-gluon</module>
     </modules>
