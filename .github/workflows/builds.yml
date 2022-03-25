@@ -84,9 +84,9 @@ jobs:
       web-push-repository-owner: 'webfx-project'
       web-push-username: ${{ github.actor }}
       web-push-email: ${{ secrets.API_GITHUB_EMAIL }}
-      jdk-version: '15.0.1'
+      jdk-version: '17.0.2'
       xcode-version: '11.7.0'
-      graalvm-version: '21.3.0.java11'
+      graalvm-version: '22.0.0'
       API_GITHUB_TOKEN: ${{ secrets.API_GITHUB_TOKEN }}
       GLUON_LICENSE: ${{ secrets.GLUON_LICENSE }}
       GLUON_IOS_CERTIFICATES_FILE_BASE64: ${{ secrets.GLUON_IOS_CERTIFICATES_FILE_BASE64 }}
