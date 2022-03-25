@@ -86,7 +86,6 @@ jobs:
       web-push-email: ${{ secrets.API_GITHUB_EMAIL }}
       jdk-version: '17'
       xcode-version: '11.7.0'
-      graalvm-version: '22.0.0'
       API_GITHUB_TOKEN: ${{ secrets.API_GITHUB_TOKEN }}
       GLUON_LICENSE: ${{ secrets.GLUON_LICENSE }}
       GLUON_IOS_CERTIFICATES_FILE_BASE64: ${{ secrets.GLUON_IOS_CERTIFICATES_FILE_BASE64 }}
@@ -276,11 +275,11 @@ jobs:
         with:
           xcode-version: ${{ env.xcode-version }}
 
-      # Setting up the GraalVM environment
-      - name: Set up GraalVM environment ${{ env.graalvm-version }}
-        uses: DeLaGuardo/setup-graalvm@master
-        with:
-          graalvm-version: ${{ env.graalvm-version }}
+      # Using Gluon action to set up the GraalVM environment
+      - uses: gluonhq/setup-graalvm@master
+        # set GITHUB_TOKEN to avoid exceeding GitHub's API rate limit
+        env:
+          GITHUB_TOKEN: ${{ secrets.API_GITHUB_TOKEN }}
 
       # Gluon needs additional libraries on Linux
       - if: runner.os == 'Linux'
