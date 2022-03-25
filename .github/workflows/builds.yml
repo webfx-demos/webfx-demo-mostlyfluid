@@ -121,19 +121,19 @@ jobs:
 
 
       ##################################################################################################################
-      #      Building WebFX + this repository (jars + OpenJFX fat jar + javapackager + Web build (GWT) if required)     #
+      #      Building WebFX + this repository (jars + OpenJFX fat jar + javapackager + Web build (GWT) if required)    #
       ##################################################################################################################
       # Builds generated on Ubuntu:                                                                                    #
       #  1) App-Web.war : Web app (built with GWT)                                                                     #
-      #  2) App-Linux-x64-runnable.jar : Java archive (fat jar with OpenJFX for Linux)                                  #
+      #  2) App-Linux-x64-runnable.jar : Java archive (fat jar with OpenJFX for Linux)                                 #
       #  3) App-Linux-x64-jvm-package.deb                                                                              #
       #  4) App-Linux-x64-jvm-package.rpm                                                                              #
       # Builds generated on Windows:                                                                                   #
-      #  7) App-Windows-x64-runnable.jar : Java archive (fat jar with OpenJFX for Windows)                              #
+      #  7) App-Windows-x64-runnable.jar : Java archive (fat jar with OpenJFX for Windows)                             #
       #  8) App-Windows-x64-jvm-installer.exe : Windows installer (exe)                                                #
       #  9) App-Windows-x64-jvm-installer.msi : Windows installer (msi)                                                #
       # Builds generated on MacOS:                                                                                     #
-      # 11) App-MacOS-x64-runnable.jar : Java archive (fat jar with OpenJFX for MacOS)                                  #
+      # 11) App-MacOS-x64-runnable.jar : Java archive (fat jar with OpenJFX for MacOS)                                 #
       # 12) App-MacOs-x64-jvm-package.dmg                                                                              #
       # 13) App-MacOS-x64-jvm-package.pkg                                                                              #
       ##################################################################################################################
@@ -179,15 +179,15 @@ jobs:
       ##################################################################################################################
       # On Ubuntu:                                                                                                     #
       #  1) App-Web.war : Web app (built with GWT)                                                                     #
-      #  2) App-Linux-x64-runnable.jar : Java archive (fat jar with OpenJFX for Linux)                                  #
+      #  2) App-Linux-x64-runnable.jar : Java archive (fat jar with OpenJFX for Linux)                                 #
       #  3) App-Linux-x64-jvm-package.deb                                                                              #
       #  4) App-Linux-x64-jvm-package.rpm                                                                              #
       # On Windows:                                                                                                    #
-      #  7) App-Windows-x64-runnable.jar : Java archive (fat jar with OpenJFX for Windows)                              #
+      #  7) App-Windows-x64-runnable.jar : Java archive (fat jar with OpenJFX for Windows)                             #
       #  8) App-Windows-x64-jvm-installer.exe : Windows installer (exe)                                                #
       #  9) App-Windows-x64-jvm-installer.msi : Windows installer (msi)                                                #
       # On MacOS:                                                                                                      #
-      # 11) App-MacOS-x64-runnable.jar : Java archive (fat jar with OpenJFX for MacOS)                                  #
+      # 11) App-MacOS-x64-runnable.jar : Java archive (fat jar with OpenJFX for MacOS)                                 #
       # 12) App-MacOs-x64-jvm-package.dmg                                                                              #
       # 13) App-MacOS-x64-jvm-package.pkg                                                                              #
       ##################################################################################################################
@@ -399,19 +399,19 @@ jobs:
       ##################################################################################################################
       # Build-1-assets:                                                                                                #
       #  1) App-Web.war : Web app (built with GWT)                                                                     #
-      #  2) App-Linux-x64-runnable.jar : Java archive (fat jar with OpenJFX for Linux)                                  #
+      #  2) App-Linux-x64-runnable.jar : Java archive (fat jar with OpenJFX for Linux)                                 #
       #  3) App-Linux-x64-jvm-package.deb                                                                              #
       #  4) App-Linux-x64-jvm-package.rpm                                                                              #
       #  5) App-Linux-x64-native-runnable : Linux desktop native app (Gluon)                                           #
       # Build-2-assets:                                                                                                #
       #  6) App-Android-aarch64-native-package.apk : Android native app (Gluon)                                        #
       # Build-3-assets:                                                                                                #
-      #  7) App-Windows-x64-runnable.jar : Java archive (fat jar with OpenJFX for Windows)                              #
+      #  7) App-Windows-x64-runnable.jar : Java archive (fat jar with OpenJFX for Windows)                             #
       #  8) App-Windows-x64-jvm-installer.exe : Windows installer (exe)                                                #
       #  9) App-Windows-x64-jvm-installer.msi : Windows installer (msi)                                                #
       # 10) App-Windows-x64-native-runnable.exe : Windows desktop native app (Gluon)                                   #
       # Build-4-assets:                                                                                                #
-      # 11) App-MacOS-x64-runnable.jar : Java archive (fat jar with OpenJFX for MacOS)                                  #
+      # 11) App-MacOS-x64-runnable.jar : Java archive (fat jar with OpenJFX for MacOS)                                 #
       # 12) App-MacOs-x64-jvm-package.dmg                                                                              #
       # 13) App-MacOS-x64-jvm-package.pkg                                                                              #
       # 14) App-macOS-x64-native-runnable : MacOS desktop native app (Gluon)                                           #
