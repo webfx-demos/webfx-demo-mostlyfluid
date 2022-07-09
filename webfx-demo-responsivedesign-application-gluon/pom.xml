@@ -13,6 +13,8 @@
 
     <artifactId>webfx-demo-responsivedesign-application-gluon</artifactId>
 
+    <name>WebFXDemoResponsivedesign</name>
+
     <dependencies>
 
         <dependency>

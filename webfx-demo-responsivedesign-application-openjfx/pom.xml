@@ -54,8 +54,8 @@
     </dependencies>
 
     <properties>
-        <plugin.javapackager.name>webfx-demo-responsivedesign</plugin.javapackager.name>
-        <plugin.javapackager.displayName>webfx-demo-responsivedesign</plugin.javapackager.displayName>
+        <plugin.javapackager.name>WebFXDemoResponsivedesign</plugin.javapackager.name>
+        <plugin.javapackager.displayName>WebFX Demo Responsivedesign</plugin.javapackager.displayName>
         <plugin.javapackager.url/>
     </properties>
 
