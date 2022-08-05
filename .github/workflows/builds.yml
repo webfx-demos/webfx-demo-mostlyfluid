@@ -32,7 +32,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        app: [{name: 'ResponsiveDesign', module-token: 'webfx-demo-responsivedesign', gwt-token: 'webfx_demo_responsivedesign', gluon-token: 'WebFXDemoResponsivedesign', web-push-branch: 'responsivedesign', ios-bundle-id: 'dev.webfx.demo.responsivedesign', version: '0.1.0-SNAPSHOT'}]
+        app: [{name: 'MostlyFluid', module-token: 'webfx-demo-mostlyfluid', gwt-token: 'webfx_demo_mostlyfluid', gluon-token: 'WebFXDemoMostlyfluid', web-push-branch: 'mostlyfluid', ios-bundle-id: 'dev.webfx.demo.mostlyfluid', version: '0.1.0-SNAPSHOT'}]
         os-config:  [1, 2, 3, 4]
         include:
           - os-config: 1 # Generates builds 1) 2) 3) 4) & 5)
