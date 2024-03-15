@@ -36,6 +36,7 @@
         <module>webfx-demo-mostlyfluid-application</module>
         <module>webfx-demo-mostlyfluid-application-gluon</module>
         <module>webfx-demo-mostlyfluid-application-gwt</module>
+        <module>webfx-demo-mostlyfluid-application-j2cl</module>
         <module>webfx-demo-mostlyfluid-application-openjfx</module>
     </modules>
 
